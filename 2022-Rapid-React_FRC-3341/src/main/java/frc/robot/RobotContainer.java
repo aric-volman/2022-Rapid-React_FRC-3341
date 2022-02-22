@@ -5,10 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-
-import frc.robot.subsystems.MaxbotixUltrasonicSensor;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,12 +18,31 @@ import frc.robot.subsystems.MaxbotixUltrasonicSensor;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+
+  private static Joystick joystick;
+  private static JoystickButton shootbutton;
+  private static JoystickButton flywheelbutton;
+  private static JoystickButton rollerbutton;
+  private static JoystickButton setanglebutton;
+  private static JoystickButton resetanglebutton;
+
+  private double flywheelvelocity = 0;
+
+  private double angle = 30;
+
+  private int rollerpower = 0;
+
+  private static final BallHandler ballHandler = new BallHandler();
   MaxbotixUltrasonicSensor ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
+  // The robot's subsystems and commands are defined here...
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
+    joystick = new Joystick(Constants.JoystickPorts.JoystickPort1);
     // Configure the button bindings
     configureButtonBindings();
+    
   }
 
   /**
@@ -31,15 +51,42 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    // Button Bindings -- a perpetual WIP
+
+    shootbutton = new JoystickButton(joystick, 1);
+    //shootbutton.toggleWhenPressed(new EncoderShoot(flywheelpower));
+    shootbutton.toggleWhenPressed(new ManualFlywheel(1.0), false);
+    
+    flywheelbutton = new JoystickButton(joystick, 2);
+    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity));
+    
+    rollerbutton = new JoystickButton(joystick, 3);
+    //rollerbutton.toggleWhenPressed(new ManualRoller(rollerpower));
+    rollerbutton.whenPressed(new SetAnglePID(10.0, ballHandler), false);
+    
+    setanglebutton = new JoystickButton(joystick, 4);
+    setanglebutton.whenPressed(new SetAnglePID(angle, ballHandler), false); // Changes it to non-interruptable
+    
+    resetanglebutton = new JoystickButton(joystick, 5);
+    //resetanglebutton.toggleWhenPressed(new SetAngle(0));
+    resetanglebutton.whenPressed(new SetAnglePID(0.0, ballHandler), false);
+
+
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return null;
+
+  public static Joystick getJoystick() {
+    return joystick;
   }
+
+  public static BallHandler returnBallHandler() { // Needed for EncoderShoot
+    return ballHandler;
+  }
+ 
 }
