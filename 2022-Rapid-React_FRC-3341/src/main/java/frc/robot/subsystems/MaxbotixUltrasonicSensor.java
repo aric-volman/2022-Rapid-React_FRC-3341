@@ -32,7 +32,7 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
    * @param address The address of the sensor on the I2C bus.
    */
   public MaxbotixUltrasonicSensor(int address) {
-    i2cPort = I2C.Port.kOnboard;
+    i2cPort = I2C.Port.kMXP;
 
     // The RoboRIO uses 7 bit addressing, so the address here is 112
     i2cController = new I2C(i2cPort, address);

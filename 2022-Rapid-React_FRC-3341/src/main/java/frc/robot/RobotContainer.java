@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -21,19 +22,21 @@ public class RobotContainer {
 
   private static Joystick joystick;
   private static JoystickButton shootbutton;
+  private static JoystickButton intakebutton;
   private static JoystickButton flywheelbutton;
   private static JoystickButton rollerbutton;
   private static JoystickButton setanglebutton;
   private static JoystickButton resetanglebutton;
 
-  private double flywheelvelocity = 0;
+  private double flywheelvelocity = 1.0;
 
   private double angle = 30;
 
-  private int rollerpower = 0;
-
   private static final BallHandler ballHandler = new BallHandler();
-  MaxbotixUltrasonicSensor ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
+
+  private MaxbotixUltrasonicSensor ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
+  private InfraredSensor infrared = new InfraredSensor();
+
   // The robot's subsystems and commands are defined here...
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -55,20 +58,23 @@ public class RobotContainer {
     // Button Bindings -- a perpetual WIP
 
     shootbutton = new JoystickButton(joystick, 1);
-    //shootbutton.toggleWhenPressed(new EncoderShoot(flywheelpower));
-    shootbutton.toggleWhenPressed(new ManualFlywheel(1.0), false);
+    //shootbutton.toggleWhenPressed(new SequentialCommandGroup(new SetAnglePID(angle, ballHandler), new EncoderShoot(flywheelvelocity, ballHandler)));
+    shootbutton.whenPressed(new EncoderShootAtAngle(flywheelvelocity, angle, ballHandler));
     
-    flywheelbutton = new JoystickButton(joystick, 2);
-    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity));
+    intakebutton = new JoystickButton(joystick, 2);
+    intakebutton.whenPressed(new Intake(ballHandler, infrared, ultrasonicSensor));
+
+    flywheelbutton = new JoystickButton(joystick, 3);
+    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity), false);
     
-    rollerbutton = new JoystickButton(joystick, 3);
+    rollerbutton = new JoystickButton(joystick, 4);
     //rollerbutton.toggleWhenPressed(new ManualRoller(rollerpower));
     rollerbutton.whenPressed(new SetAnglePID(10.0, ballHandler), false);
     
-    setanglebutton = new JoystickButton(joystick, 4);
+    setanglebutton = new JoystickButton(joystick, 5);
     setanglebutton.whenPressed(new SetAnglePID(angle, ballHandler), false); // Changes it to non-interruptable
     
-    resetanglebutton = new JoystickButton(joystick, 5);
+    resetanglebutton = new JoystickButton(joystick, 6);
     //resetanglebutton.toggleWhenPressed(new SetAngle(0));
     resetanglebutton.whenPressed(new SetAnglePID(0.0, ballHandler), false);
 

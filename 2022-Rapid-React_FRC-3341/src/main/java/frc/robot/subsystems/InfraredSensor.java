@@ -16,7 +16,6 @@ public class InfraredSensor extends SubsystemBase {
 
   public boolean get(){
     return !(InfraredInput.get());
-    
   }
 
   @Override

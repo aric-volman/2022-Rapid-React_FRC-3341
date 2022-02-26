@@ -28,11 +28,11 @@ public final class Constants {
     }
 
     public static final class MotorPorts {
-            public static final int port1 = 14;
+            public static final int port1 = 14; // Flywheel
             public static final int port2 = 3;
             public static final int port3 = 9; // Pivot
             public static final int port4 = 7;
-            public static final int port5 = 14;
+            public static final int port5 = 10; // Roller
             public static final int port6 = 10;
          } 
     
@@ -53,8 +53,8 @@ public final class Constants {
     }
 
     public static final class pivotPIDConsts { // Tested on last year's chassis, not this year!
-        public static final double pidP = 0.002;
-        public static final double pidI = 0.005;
+        public static final double pidP = 0.014;
+        public static final double pidI = 0.01;
         public static final double pidD = 0;
     }
 

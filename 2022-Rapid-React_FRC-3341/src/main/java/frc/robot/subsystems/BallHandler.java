@@ -33,10 +33,10 @@ public class BallHandler extends SubsystemBase {
   private double wheelDiameter = 0.1;
   private double wheelCircumference = wheelDiameter*Math.PI;
 
-  private double ticksToMeters = wheelCircumference / 4096;
+  private double ticksToMeters = wheelCircumference / 4096.0;
   //private double ticksToDegrees = 4096*360;
 
-  private double flywheelTolerance;
+  private double flywheelTolerance = 0.05;
 
   //change ports when ready to start testing
   private final WPI_TalonSRX leftflywheel = new WPI_TalonSRX(Constants.MotorPorts.port1);
@@ -152,12 +152,12 @@ public double getFlywheelCurrent() {
     return (leftflywheelPID.atSetpoint());
   }
 
-  public void setPivotPower(double speed) {
-    pivot.set(speed);
+  public void setPivotPower(double power) {
+    pivot.set(power);
   }
 
-  public void setRollerPower(double speed) {
-    roller.set(speed);
+  public void setRollerPower(double power) {
+    roller.set(power);
   }
 
   public double getRollerPower() {
@@ -197,12 +197,9 @@ public double getFlywheelCurrent() {
     if (pivot.isFwdLimitSwitchClosed() == 0) {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
-    setPivotPower(RobotContainer.getJoystick().getY());
+    //setPivotPower(RobotContainer.getJoystick().getY());
     //setFlywheelPower(RobotContainer.getJoystick().getY());
-    if (RobotContainer.getJoystick().getRawButton(6)) {
-      SmartDashboard.putBoolean("Button 6", RobotContainer.getJoystick().getRawButton(6));
-      pivot.setNeutralMode(NeutralMode.Coast);
-    }
+    //setRollerPower(RobotContainer.getJoystick().getY());
     leftflywheelPID.setPID(leftflywheelTestInputPIDP.getDouble(Constants.flywheelPIDConsts.pidP), leftflywheelTestInputPIDI.getDouble(Constants.flywheelPIDConsts.pidI), leftflywheelTestInputPIDD.getDouble(Constants.flywheelPIDConsts.pidD));
     
   }

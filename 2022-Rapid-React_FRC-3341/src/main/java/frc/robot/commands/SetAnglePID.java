@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.BallHandler;
 import frc.robot.Constants;
@@ -14,7 +15,11 @@ import frc.robot.Constants;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetAnglePID extends PIDCommand {
-  BallHandler bh;
+  private BallHandler bh;
+  private Timer timeout = new Timer();
+  // Adjust this when it's appropriate
+  private double notThereYetTime = 3.0;
+  private double tolerance = 1.5;
   /** Creates a new SetAnglePID. 
    * 
    * 
@@ -34,7 +39,13 @@ public class SetAnglePID extends PIDCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(ballHandler);
-    getController().setTolerance(1.0);
+    getController().setTolerance(tolerance);
+  }
+
+  @Override
+  public void initialize() {
+    timeout.start();
+    timeout.reset();
   }
 
   // Returns true when the command should end.
@@ -45,6 +56,6 @@ public class SetAnglePID extends PIDCommand {
 
   @Override
   public boolean isFinished() {
-    return getController().atSetpoint();
+    return (getController().atSetpoint() | timeout.get() >= notThereYetTime);
   }
 }
