@@ -5,21 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.BallHandler;
 
 public class ManualRoller extends CommandBase {
 
   
-  private BallHandler ballhandler;
+  private BallHandler ballHandler;
   private double power;
   
   /** Creates a new ManualRoller. */
-  public ManualRoller(double power) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.returnBallHandler());
-    this.ballhandler = RobotContainer.returnBallHandler();
+  public ManualRoller(double power, BallHandler bh) {
+    this.ballHandler = bh;
     this.power = power;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(ballHandler);
   }
 
   // Called when the command is initially scheduled.
@@ -29,13 +28,13 @@ public class ManualRoller extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ballhandler.setRollerPower(power);
+    ballHandler.setRollerPower(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    ballhandler.setRollerPower(0);
+    ballHandler.setRollerPower(0.0);
   }
 
   // Returns true when the command should end.

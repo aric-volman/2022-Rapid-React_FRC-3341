@@ -11,12 +11,12 @@ public class Intake extends CommandBase {
   private InfraredSensor infrared;
   private MaxbotixUltrasonicSensor ultrasonic;
   /** Creates a new Intake. */
-  public Intake(BallHandler b, InfraredSensor ir, MaxbotixUltrasonicSensor mb) {
-    ballHandler = b;
+  public Intake(BallHandler bh, InfraredSensor ir, MaxbotixUltrasonicSensor mb) {
+    ballHandler = bh;
     infrared = ir;
     ultrasonic = mb;
-    addRequirements(ballHandler, infrared);
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(ballHandler, infrared);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +30,7 @@ public class Intake extends CommandBase {
       ballHandler.setPivotPower(0.1); //motor goes clockwise, set this negative??
     } else {
       ballHandler.setPivotPower(0.0);
-      ballHandler.setFlywheelConstantVelocity(0.75);
+      ballHandler.setFlywheelConstantVelocity(0.75); // Need to determine the correct intake velocity
       ballHandler.setRollerPower(0.15); //roller goes clockwise, set this as negative
       } 
     }

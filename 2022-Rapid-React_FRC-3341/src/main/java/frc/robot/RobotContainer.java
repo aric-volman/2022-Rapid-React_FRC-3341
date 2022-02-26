@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -58,14 +57,13 @@ public class RobotContainer {
     // Button Bindings -- a perpetual WIP
 
     shootbutton = new JoystickButton(joystick, 1);
-    //shootbutton.toggleWhenPressed(new SequentialCommandGroup(new SetAnglePID(angle, ballHandler), new EncoderShoot(flywheelvelocity, ballHandler)));
     shootbutton.whenPressed(new EncoderShootAtAngle(flywheelvelocity, angle, ballHandler));
     
     intakebutton = new JoystickButton(joystick, 2);
     intakebutton.whenPressed(new Intake(ballHandler, infrared, ultrasonicSensor));
 
     flywheelbutton = new JoystickButton(joystick, 3);
-    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity), false);
+    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity, ballHandler), false);
     
     rollerbutton = new JoystickButton(joystick, 4);
     //rollerbutton.toggleWhenPressed(new ManualRoller(rollerpower));

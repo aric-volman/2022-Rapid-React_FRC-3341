@@ -28,12 +28,10 @@ public final class Constants {
     }
 
     public static final class MotorPorts {
-            public static final int port1 = 14; // Flywheel
-            public static final int port2 = 3;
-            public static final int port3 = 9; // Pivot
-            public static final int port4 = 7;
-            public static final int port5 = 10; // Roller
-            public static final int port6 = 10;
+            public static final int leftFlywheelPort = 16;
+            public static final int rightFlywheelPort = 17;
+            public static final int pivotPort = 9;
+            public static final int rollerPort = 7;
          } 
     
     public static final class JoystickAxis {
@@ -46,7 +44,13 @@ public final class Constants {
         public static final int One = 1;
     }
     
-    public static final class flywheelPIDConsts { // Tested on last year's chassis, not this year!
+    public static final class leftFlywheelPIDConsts { // Tested on last year's chassis, not this year!
+        public static double pidP = 0.07;
+        public static double pidI = 0;
+        public static double pidD = 0;
+    }
+
+    public static final class rightFlywheelPIDConsts { // Tested on last year's chassis, not this year!
         public static double pidP = 0.07;
         public static double pidI = 0;
         public static double pidD = 0;
@@ -58,14 +62,15 @@ public final class Constants {
         public static final double pidD = 0;
     }
 
-    public static final class LeftflywheelFF { // Tested on last year's chassis, not this year!
+    public static final class leftFlywheelFF { // Tested on last year's chassis, not this year!
         public static final double kS = 0.41733;
         public static final double kV = 0.4025;
         public static final double kA = 0.046839;
     }
-    public static final class charConsts{
-        public static final double ks = 0;
-        public static final double kg = 0;
-        public static final double kv = 0;
+
+    public static final class rightFlywheelFF { // Tested on last year's chassis, not this year!
+        public static final double kS = 0.41733;
+        public static final double kV = 0.4025;
+        public static final double kA = 0.046839;
     }
 }

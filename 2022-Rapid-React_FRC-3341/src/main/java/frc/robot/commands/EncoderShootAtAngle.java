@@ -16,8 +16,6 @@ public class EncoderShootAtAngle extends SequentialCommandGroup {
   /** Creates a new EncoderShootAtAngle. */
   public EncoderShootAtAngle(double velocity, double angle, BallHandler bh) {
     this.ballHandler = bh;
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SetAnglePID(angle, ballHandler), new EncoderShoot(velocity, ballHandler));
   }
 }

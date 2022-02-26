@@ -15,7 +15,7 @@ import frc.robot.Constants;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetAnglePID extends PIDCommand {
-  private BallHandler bh;
+  private BallHandler ballHandler;
   private Timer timeout = new Timer();
   // Adjust this when it's appropriate
   private double notThereYetTime = 3.0;
@@ -24,18 +24,18 @@ public class SetAnglePID extends PIDCommand {
    * 
    * 
   */
-  public SetAnglePID(double angle, BallHandler ballHandler) {
+  public SetAnglePID(double angle, BallHandler bh) {
     super(
         // The controller that the command will use
         new PIDController(Constants.pivotPIDConsts.pidP, Constants.pivotPIDConsts.pidI, Constants.pivotPIDConsts.pidD),
         // This should return the measurement
-        ballHandler::getPivotPosition,
+        bh::getPivotPosition,
         // This should return the setpoint (can also be a constant)
         angle,
         // This uses the output - sign is specific for the hood
-        output -> ballHandler.setPivotPower(-1.0*output), 
-        ballHandler);
-    this.bh = ballHandler;
+        output -> bh.setPivotPower(-1.0*output), 
+        bh);
+    this.ballHandler = bh;
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(ballHandler);
@@ -51,7 +51,7 @@ public class SetAnglePID extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public void end(boolean interrupted) {
-    bh.setPivotPower(0.0);
+    ballHandler.setPivotPower(0.0);
   }
 
   @Override

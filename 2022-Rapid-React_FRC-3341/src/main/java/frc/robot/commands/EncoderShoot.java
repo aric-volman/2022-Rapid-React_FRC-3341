@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.subsystems.BallHandler;
 
 
 public class EncoderShoot extends CommandBase {
 
-  private BallHandler ballhandler;
+  private BallHandler ballHandler;
 
   double velocity;
   boolean isFlywheelAtSpeed;
@@ -25,19 +25,19 @@ public class EncoderShoot extends CommandBase {
   Timer cargoTimer = new Timer();
 
   /** Creates a new EncoderShoot. */
-  public EncoderShoot(double v, BallHandler bh) {
+  public EncoderShoot(double velocity, BallHandler bh) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.ballhandler = bh;
-    this.velocity = v;
+    this.ballHandler = bh;
+    this.velocity = velocity;
     cargoTimer.start();
-    addRequirements(ballhandler); // If you put this before assignment, bad stuff happens
+    addRequirements(ballHandler); // If you put this before assignment, bad stuff happens
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     isFlywheelAtSpeed = false;
-    ballhandler.resetFlywheelEncoders();
+    ballHandler.resetFlywheelEncoders();
     cargoTimer.reset();
   }
 
@@ -45,10 +45,10 @@ public class EncoderShoot extends CommandBase {
   @Override
   public void execute() {
 
-    ballhandler.setFlywheelConstantVelocity(velocity);
-    if (ballhandler.flywheelWithinErrorMargin()) {
-    // if(ballhandler.flywheelWithinErrorMargin() && !isFlywheelAtSpeed) {
-      ballhandler.setRollerPower(rollerpower);
+    ballHandler.setFlywheelConstantVelocity(velocity);
+    if (ballHandler.flywheelWithinErrorMargin()) {
+    // if(ballHandler.flywheelWithinErrorMargin() && !isFlywheelAtSpeed) {
+      ballHandler.setRollerPower(rollerpower);
       //isFlywheelAtSpeed = true;
     }
   }
@@ -56,8 +56,8 @@ public class EncoderShoot extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    ballhandler.setFlywheelPower(0.0);
-    ballhandler.setRollerPower(0.0);
+    ballHandler.setFlywheelPower(0.0);
+    ballHandler.setRollerPower(0.0);
   }
 
   // Returns true when the command should end.
