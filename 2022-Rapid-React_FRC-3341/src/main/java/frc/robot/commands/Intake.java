@@ -4,17 +4,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.InfraredSensor;
-import frc.robot.subsystems.MaxbotixUltrasonicSensor;
 
 public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
-  private MaxbotixUltrasonicSensor ultrasonic;
   /** Creates a new Intake. */
-  public Intake(BallHandler bh, InfraredSensor ir, MaxbotixUltrasonicSensor mb) {
+  public Intake(BallHandler bh, InfraredSensor ir) {
     ballHandler = bh;
     infrared = ir;
-    ultrasonic = mb;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(ballHandler, infrared);
   }
@@ -27,11 +24,11 @@ public class Intake extends CommandBase {
   @Override
   public void execute() {
     if (!ballHandler.isForwardLimitClosed()){
-      ballHandler.setPivotPower(0.1); //motor goes clockwise, set this negative??
+      ballHandler.setPivotPower(0.1); // Motor goes clockwise, set this negative??
     } else {
       ballHandler.setPivotPower(0.0);
       ballHandler.setFlywheelConstantVelocity(0.75); // Need to determine the correct intake velocity
-      ballHandler.setRollerPower(0.15); //roller goes clockwise, set this as negative
+      ballHandler.setRollerPower(0.15); // Roller goes clockwise, set this as negative
       } 
     }
 
@@ -46,6 +43,6 @@ public class Intake extends CommandBase {
   @Override
   public boolean isFinished() {
     // return infrared.get();
-    return (ultrasonic.getDistance() <= 0.3);
+    return (infrared.get());
   }
 }

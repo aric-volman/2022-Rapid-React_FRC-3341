@@ -60,7 +60,7 @@ public class RobotContainer {
     shootbutton.whenPressed(new EncoderShootAtAngle(flywheelvelocity, angle, ballHandler));
     
     intakebutton = new JoystickButton(joystick, 2);
-    intakebutton.whenPressed(new Intake(ballHandler, infrared, ultrasonicSensor));
+    intakebutton.whenPressed(new Intake(ballHandler, infrared));
 
     flywheelbutton = new JoystickButton(joystick, 3);
     flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity, ballHandler), false);
