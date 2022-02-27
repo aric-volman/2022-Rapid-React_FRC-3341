@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -20,6 +21,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class BallHandler extends SubsystemBase {
 
@@ -29,6 +31,12 @@ public class BallHandler extends SubsystemBase {
   private double wheelCircumference = wheelDiameter*Math.PI;
 
   private double flywheelTolerance = 0.05; // Tolerance in m/s
+
+  private double pivotTolerance = 1;
+
+  private double angle = 0.0;
+
+  private double pivotRange = 45.0; // Something we need to test
 
   // Change ports later...
   private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.MotorPorts.leftFlywheelPort);
@@ -47,12 +55,18 @@ public class BallHandler extends SubsystemBase {
   private NetworkTableEntry rightFlywheelTestInputPIDI = tab.add("Right Flywheel PID I", Constants.rightFlywheelPIDConsts.pidI).getEntry();
   private NetworkTableEntry rightFlywheelTestInputPIDD = tab.add("Right Flywheel PID D", Constants.rightFlywheelPIDConsts.pidD).getEntry();
 
+  private NetworkTableEntry pivotTestInputPIDP = tab.add("Pivot PID P", Constants.pivotPIDConsts.pidP).getEntry();
+  private NetworkTableEntry pivotTestInputPIDI = tab.add("Pivot PID I", Constants.pivotPIDConsts.pidI).getEntry();
+  private NetworkTableEntry pivotTestInputPIDD = tab.add("Pivot PID D", Constants.pivotPIDConsts.pidD).getEntry();
+
   // Overriden with testing Constants for flywheel
   private final PIDController leftFlywheelPID = new PIDController(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));
   private final PIDController rightFlywheelPID = new PIDController(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
- 
+  private final PIDController pivotPID = new PIDController(rightFlywheelTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
+
   private SimpleMotorFeedforward leftFlywheelFF = new SimpleMotorFeedforward(Constants.leftFlywheelFF.kS, Constants.leftFlywheelFF.kV, Constants.leftFlywheelFF.kA);
   private SimpleMotorFeedforward rightFlywheelFF = new SimpleMotorFeedforward(Constants.rightFlywheelFF.kS, Constants.rightFlywheelFF.kV, Constants.rightFlywheelFF.kA);
+  private ArmFeedforward pivotFF = new ArmFeedforward(Constants.pivotFF.kS, Constants.pivotFF.kC, Constants.pivotFF.kV);
  
   public BallHandler() {
     pivot.configFactoryDefault();
@@ -80,6 +94,7 @@ public class BallHandler extends SubsystemBase {
 
     leftFlywheelPID.setTolerance(flywheelTolerance);
     rightFlywheelPID.setTolerance(flywheelTolerance);
+    pivotPID.setTolerance(pivotTolerance);
 
   }
 
@@ -123,8 +138,8 @@ public class BallHandler extends SubsystemBase {
   }
 
   public void setFlywheelConstantVelocity(double velocity) {
-    leftFlywheel.set((leftFlywheelFF.calculate(velocity))/12.0 + leftFlywheelPID.calculate(getLeftVelocity(), velocity)); //DIVIDE BY THE VOLTAGE!!!
-    rightFlywheel.set((rightFlywheelFF.calculate(velocity))/12.0 + rightFlywheelPID.calculate(getRightVelocity(), velocity)); //DIVIDE BY THE VOLTAGE!!!
+    leftFlywheel.set((leftFlywheelFF.calculate(velocity))/12.0 + leftFlywheelPID.calculate(getLeftVelocity(), velocity)); // DIVIDE BY THE VOLTAGE!!!
+    rightFlywheel.set((rightFlywheelFF.calculate(velocity))/12.0 + rightFlywheelPID.calculate(getRightVelocity(), velocity)); // DIVIDE BY THE VOLTAGE!!!
   }
 
   public boolean flywheelWithinErrorMargin() {
@@ -139,6 +154,14 @@ public class BallHandler extends SubsystemBase {
 
   public void resetPivotEncoders() {
     pivot.setSelectedSensorPosition(0, 0, 10);
+  }
+
+  public void setPivotAngle(double angle) {
+    this.angle = angle; // We want it to always "brake" with constantly running feedforward and PID
+  }
+
+  public boolean atSetpoint() {
+    return pivotPID.atSetpoint();
   }
 
   public boolean isForwardLimitClosed() {
@@ -220,13 +243,18 @@ public class BallHandler extends SubsystemBase {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
 
-    setPivotPower(RobotContainer.getJoystick().getY());
+    setPivotAngle(RobotContainer.getJoystick().getY()*pivotRange); // This may be a bit ... incorrect
+    setFlywheelPower(RobotContainer.getJoystick().getX());
+
+    //setPivotPower(RobotContainer.getJoystick().getY());
     //setFlywheelPower(RobotContainer.getJoystick().getY());
     //setRollerPower(RobotContainer.getJoystick().getY());
     
     leftFlywheelPID.setPID(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));
     rightFlywheelPID.setPID(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
-  
+    pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
+
+    pivot.set((pivotFF.calculate(angle, 0.0))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
   }
 
 

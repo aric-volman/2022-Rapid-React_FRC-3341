@@ -10,6 +10,7 @@ public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
   private Timer timeout = new Timer();
+  private double notThereYetTime = 3.0; // We really need to adjust this
   /** Creates a new Intake. */
   public Intake(BallHandler bh, InfraredSensor ir) {
     ballHandler = bh;
@@ -29,9 +30,8 @@ public class Intake extends CommandBase {
   @Override
   public void execute() {
     if (!ballHandler.isForwardLimitClosed()){
-      ballHandler.setPivotPower(0.1); // Motor goes clockwise, set this negative??
+      ballHandler.setPivotAngle(0.0); // We'd prefer not to set the power directly
     } else {
-      ballHandler.setPivotPower(0.0);
       ballHandler.setFlywheelConstantVelocity(0.75); // Need to determine the correct intake velocity
       ballHandler.setRollerPower(0.15); // Roller goes clockwise, set this as negative
       } 
@@ -48,6 +48,6 @@ public class Intake extends CommandBase {
   @Override
   public boolean isFinished() {
     // return infrared.get();
-    return (infrared.get() | timeout.get() >= 3.0);
+    return (infrared.get() | timeout.get() >= notThereYetTime);
   }
 }
