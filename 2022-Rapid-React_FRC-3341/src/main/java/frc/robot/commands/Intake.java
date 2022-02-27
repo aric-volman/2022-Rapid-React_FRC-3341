@@ -1,6 +1,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.InfraredSensor;
@@ -8,6 +9,7 @@ import frc.robot.subsystems.InfraredSensor;
 public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
+  private Timer timeout = new Timer();
   /** Creates a new Intake. */
   public Intake(BallHandler bh, InfraredSensor ir) {
     ballHandler = bh;
@@ -18,7 +20,10 @@ public class Intake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timeout.start();
+    timeout.reset();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -43,6 +48,6 @@ public class Intake extends CommandBase {
   @Override
   public boolean isFinished() {
     // return infrared.get();
-    return (infrared.get());
+    return (infrared.get() | timeout.get() >= 3.0);
   }
 }

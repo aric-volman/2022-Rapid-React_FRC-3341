@@ -30,8 +30,8 @@ public final class Constants {
     public static final class MotorPorts {
             public static final int leftFlywheelPort = 16;
             public static final int rightFlywheelPort = 17;
-            public static final int pivotPort = 9;
-            public static final int rollerPort = 7;
+            public static final int pivotPort = 14;
+            public static final int rollerPort = 15;
          } 
     
     public static final class JoystickAxis {
@@ -72,5 +72,11 @@ public final class Constants {
         public static final double kS = 0.41733;
         public static final double kV = 0.4025;
         public static final double kA = 0.046839;
+    }
+
+    public static final class pivotFF { // Tested on last year's chassis, not this year!
+        public static final double kS = 0.41733;
+        public static final double kC = 0.4025;
+        public static final double kV = 0.046839;
     }
 }

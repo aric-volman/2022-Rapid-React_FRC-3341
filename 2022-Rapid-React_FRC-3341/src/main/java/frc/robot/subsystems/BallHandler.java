@@ -76,7 +76,7 @@ public class BallHandler extends SubsystemBase {
     rightFlywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
     // leftFlywheel.setInverted(true);
-    // rightFlywheel.setInverted(true);
+    rightFlywheel.setInverted(true);
 
     leftFlywheelPID.setTolerance(flywheelTolerance);
     rightFlywheelPID.setTolerance(flywheelTolerance);
@@ -220,7 +220,7 @@ public class BallHandler extends SubsystemBase {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
 
-    //setPivotPower(RobotContainer.getJoystick().getY());
+    setPivotPower(RobotContainer.getJoystick().getY());
     //setFlywheelPower(RobotContainer.getJoystick().getY());
     //setRollerPower(RobotContainer.getJoystick().getY());
     

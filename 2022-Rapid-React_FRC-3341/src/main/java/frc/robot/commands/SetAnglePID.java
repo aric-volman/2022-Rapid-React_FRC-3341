@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.BallHandler;
@@ -16,6 +17,7 @@ import frc.robot.Constants;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetAnglePID extends PIDCommand {
   private BallHandler ballHandler;
+  private static ArmFeedforward pivotFF = new ArmFeedforward(Constants.pivotFF.kS, Constants.pivotFF.kS, Constants.pivotFF.kV);
   private Timer timeout = new Timer();
   // Adjust this when it's appropriate
   private double notThereYetTime = 3.0;
@@ -33,7 +35,7 @@ public class SetAnglePID extends PIDCommand {
         // This should return the setpoint (can also be a constant)
         angle,
         // This uses the output - sign is specific for the hood
-        output -> bh.setPivotPower(-1.0*output), 
+        output -> bh.setPivotPower(output + (pivotFF.calculate(angle*(Math.PI/180.0), 0.0)/12.0)), 
         bh);
     this.ballHandler = bh;
     // Use addRequirements() here to declare subsystem dependencies.
