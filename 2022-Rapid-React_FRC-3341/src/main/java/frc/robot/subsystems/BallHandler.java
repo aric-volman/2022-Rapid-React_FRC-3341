@@ -270,7 +270,8 @@ public class BallHandler extends SubsystemBase {
     pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
 
     // Do we need to convert to radians??? 
-    pivot.set((pivotFF.calculate(angle*(Math.PI/180.0), angleVelocity*(Math.PI/180.0)))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
+    // pivot.set((pivotFF.calculate(angle*(Math.PI/180.0), angleVelocity*(Math.PI/180.0)))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
+    pivot.set((pivotFF.calculate(angle, angleVelocity))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
   }
 
 
