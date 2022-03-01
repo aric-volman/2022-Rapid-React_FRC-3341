@@ -36,6 +36,8 @@ public class BallHandler extends SubsystemBase {
 
   private double angle = 0.0;
 
+  private double angleVelocity = 0.5; // Don't know if we need this
+
   private double pivotRange = 45.0; // Something we need to test
 
   // Change ports later...
@@ -267,7 +269,8 @@ public class BallHandler extends SubsystemBase {
     rightFlywheelPID.setPID(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
     pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
 
-    pivot.set((pivotFF.calculate(angle, 0.0))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
+    // Do we need to convert to radians??? 
+    pivot.set((pivotFF.calculate(angle*(Math.PI/180.0), angleVelocity*(Math.PI/180.0)))/12.0 + pivotPID.calculate(getPivotPosition(), angle)); // DIVIDE BY THE VOLTAGE!!!
   }
 
 
