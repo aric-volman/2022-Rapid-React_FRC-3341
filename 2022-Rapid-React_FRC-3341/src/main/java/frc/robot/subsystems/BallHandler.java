@@ -121,7 +121,15 @@ public class BallHandler extends SubsystemBase {
   }
 
   public double getRightVelocity(){
-  return ((rightFlywheel.getSelectedSensorVelocity() * 10)/4096.0)*wheelCircumference;
+    return ((rightFlywheel.getSelectedSensorVelocity() * 10)/4096.0)*wheelCircumference;
+  }
+
+  public double getLeftRPM() {
+    return ((leftFlywheel.getSelectedSensorVelocity() * 10)/4096.0)*60.0;
+  }
+
+  public double getRightRPM() {
+    return ((rightFlywheel.getSelectedSensorVelocity() * 10)/4096.0)*60.0;
   }
 
   public double getLeftFlywheelPower() {
@@ -222,12 +230,17 @@ public class BallHandler extends SubsystemBase {
   public void periodic() {
 
     SmartDashboard.putNumber("Left Flywheel Velocity", getLeftVelocity());
+    SmartDashboard.putNumber("Left Flywheel RPM", getLeftRPM());
     SmartDashboard.putNumber("Left Flywheel Power", getLeftFlywheelPower());
     SmartDashboard.putNumber("Left Flywheel Ticks: ", getTicks(leftFlywheel));
 
     SmartDashboard.putNumber("Right Flywheel Velocity", getRightVelocity());
+    SmartDashboard.putNumber("Right Flywheel RPM", getRightRPM());
     SmartDashboard.putNumber("Right Flywheel Power", getRightFlywheelPower());
     SmartDashboard.putNumber("Right Flywheel Ticks: ", getTicks(rightFlywheel));
+
+    SmartDashboard.putNumber("Average Velocity", (getLeftVelocity() + getRightVelocity())/2.0);
+    SmartDashboard.putNumber("Average RPM", (getLeftRPM() + getRightRPM())/2.0);
     
     SmartDashboard.putNumber("Roller Ticks: ", getRollerTicks());
     SmartDashboard.putNumber("Roller Power: ", getRollerPower());
@@ -243,7 +256,7 @@ public class BallHandler extends SubsystemBase {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
 
-    setPivotAngle(RobotContainer.getJoystick().getY()*pivotRange); // This may be a bit ... incorrect
+    setPivotAngle(Math.abs(RobotContainer.getJoystick().getY())*pivotRange); // This may be a bit ... incorrect
     setFlywheelPower(RobotContainer.getJoystick().getX());
 
     //setPivotPower(RobotContainer.getJoystick().getY());
