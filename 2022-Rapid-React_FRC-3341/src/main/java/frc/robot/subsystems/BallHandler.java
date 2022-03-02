@@ -73,12 +73,9 @@ public class BallHandler extends SubsystemBase {
   public BallHandler() {
     pivot.configFactoryDefault();
     pivot.setInverted(false);
-    pivot.setNeutralMode(NeutralMode.Brake);
     pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    pivot.setNeutralMode(NeutralMode.Brake);
-    pivot.configNeutralDeadband(0.007); // Configure this later based upon lowest PID output value
 
     roller.configFactoryDefault();
     roller.setInverted(false);
@@ -199,7 +196,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public void setPivotPower(double power) {
-    pivot.set(power);
+    pivot.set(-1.0*power); // This is what was tested March 1st
   }
 
   public double getPivotPower() {
@@ -258,10 +255,10 @@ public class BallHandler extends SubsystemBase {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
 
-    setPivotAngle(Math.abs(RobotContainer.getJoystick().getY())*pivotRange); // This may be a bit ... incorrect
+    // setPivotAngle(Math.abs(RobotContainer.getJoystick().getY())*pivotRange); // This may be a bit ... incorrect
     setFlywheelPower(RobotContainer.getJoystick().getX());
 
-    //setPivotPower(RobotContainer.getJoystick().getY());
+    setPivotPower(RobotContainer.getJoystick().getY());
     //setFlywheelPower(RobotContainer.getJoystick().getY());
     //setRollerPower(RobotContainer.getJoystick().getY());
     
