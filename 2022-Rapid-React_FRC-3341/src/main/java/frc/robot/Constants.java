@@ -79,4 +79,6 @@ public final class Constants {
         public static final double kC = 0.4025;
         public static final double kV = 0.046839;
     }
+    
+    public static final double angularOffset = 10.0; // Not tested yet
 }

@@ -3,6 +3,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.InfraredSensor;
 
@@ -30,10 +31,10 @@ public class Intake extends CommandBase {
   @Override
   public void execute() {
     if (!ballHandler.isForwardLimitClosed()){
-      ballHandler.setPivotAngle(0.0); // We'd prefer not to set the power directly
+      ballHandler.setPivotAngle(-Constants.angularOffset); // We'd prefer not to set the power directly
     } else {
-      ballHandler.setFlywheelConstantVelocity(0.75); // Need to determine the correct intake velocity
-      ballHandler.setRollerPower(0.15); // Roller goes clockwise, set this as negative
+      ballHandler.setFlywheelPower(-1.0); // Negative should mean "suck", this might be too strong
+      ballHandler.setRollerPower(-1.0); // Negative should mean "suck"
       } 
     }
 

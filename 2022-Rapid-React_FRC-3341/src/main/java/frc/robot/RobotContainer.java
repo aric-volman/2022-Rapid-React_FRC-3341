@@ -22,10 +22,10 @@ public class RobotContainer {
   private static Joystick joystick;
   private static JoystickButton shootbutton;
   private static JoystickButton intakebutton;
-  private static JoystickButton flywheelbutton;
-  private static JoystickButton rollerbutton;
-  private static JoystickButton setanglebutton;
-  private static JoystickButton resetanglebutton;
+  private static JoystickButton shootanglebutton;
+  private static JoystickButton zeroanglebutton;
+  // private static JoystickButton setanglebutton;
+  // private static JoystickButton resetanglebutton;
 
   private double flywheelvelocity = 1.0;
 
@@ -55,28 +55,27 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Button Bindings -- a perpetual WIP
-
-    shootbutton = new JoystickButton(joystick, 1);
-    shootbutton.whenPressed(new EncoderShootAtAngle(flywheelvelocity, angle, ballHandler));
     
-    intakebutton = new JoystickButton(joystick, 2);
+    intakebutton = new JoystickButton(joystick, 1);
     intakebutton.whenPressed(new Intake(ballHandler, infrared));
 
-    flywheelbutton = new JoystickButton(joystick, 3);
-    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity, ballHandler), false);
+    shootbutton = new JoystickButton(joystick, 2);
+    shootbutton.whenPressed(new EncoderShoot(flywheelvelocity, ballHandler)); // Velocity not used for now, shoots at 1800 RPM
+
+    shootanglebutton = new JoystickButton(joystick, 5);
+    shootanglebutton.toggleWhenPressed(new SetAnglePID(angle, ballHandler), false);
     
-    rollerbutton = new JoystickButton(joystick, 4);
-    //rollerbutton.toggleWhenPressed(new ManualRoller(rollerpower));
-    rollerbutton.whenPressed(new SetAnglePID(10.0, ballHandler), false);
+    zeroanglebutton = new JoystickButton(joystick, 6);
+    zeroanglebutton.whenPressed(new SetAnglePID(-Constants.angularOffset, ballHandler), false);
     
-    setanglebutton = new JoystickButton(joystick, 5);
+    /* Overriden by subsystem
+    setanglebutton = new JoystickButton(joystick, 3);
     setanglebutton.whenPressed(new SetAnglePID(angle, ballHandler), false); // Changes it to non-interruptable
     
-    resetanglebutton = new JoystickButton(joystick, 6);
+    resetanglebutton = new JoystickButton(joystick, 4);
     //resetanglebutton.toggleWhenPressed(new SetAngle(0));
     resetanglebutton.whenPressed(new SetAnglePID(0.0, ballHandler), false);
-
-
+    */
   }
 
   /**
@@ -87,10 +86,6 @@ public class RobotContainer {
 
   public static Joystick getJoystick() {
     return joystick;
-  }
-
-  public static BallHandler returnBallHandler() { // Needed for EncoderShoot
-    return ballHandler;
   }
  
 }

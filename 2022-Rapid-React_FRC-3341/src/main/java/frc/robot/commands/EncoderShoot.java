@@ -14,14 +14,13 @@ public class EncoderShoot extends CommandBase {
 
   private BallHandler ballHandler;
 
-  double velocity;
-  boolean isFlywheelAtSpeed;
+  private double minimumRollerPower = 1.0; // We also need to test for this if we have the time
+  private double rollerpower = 1.0;
+  private boolean isFlywheelAtSpeed;
+  private double rollBackTime = 0.5; // Something that needs to be tested
+  private double cargoIsLaunchedTime = 4.0; // Arguably the most important timer
+  private double velocity;
 
-  // placeholder
-  double cargoIsLaunchedTime = 4.0;
-
-  // placeholder
-  private double rollerpower = 0.15;
   Timer cargoTimer = new Timer();
 
   /** Creates a new EncoderShoot. */
@@ -39,17 +38,22 @@ public class EncoderShoot extends CommandBase {
     isFlywheelAtSpeed = false;
     ballHandler.resetFlywheelEncoders();
     cargoTimer.reset();
+    ballHandler.setRollerPower(-minimumRollerPower);
+    Timer.delay(rollBackTime);
+    ballHandler.setRollerPower(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    ballHandler.setFlywheelConstantVelocity(velocity);
-    if (ballHandler.flywheelWithinErrorMargin()) {
-    // if(ballHandler.flywheelWithinErrorMargin() && !isFlywheelAtSpeed) {
+    // Comment these out if you feel PID is needed
+    // ballHandler.setFlywheelConstantVelocity(velocity);
+    // if (ballHandler.flywheelWithinErrorMargin()) {
+    
+    ballHandler.setFlywheelPower(1.0);
+    if (ballHandler.getAverageRPM() >= 1800 && !isFlywheelAtSpeed) { // RPM based
       ballHandler.setRollerPower(rollerpower);
-      //isFlywheelAtSpeed = true;
+      isFlywheelAtSpeed = true;
     }
   }
 

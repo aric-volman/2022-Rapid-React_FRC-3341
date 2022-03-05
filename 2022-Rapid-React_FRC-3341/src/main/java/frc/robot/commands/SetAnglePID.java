@@ -16,12 +16,10 @@ public class SetAnglePID extends CommandBase {
   private BallHandler ballHandler;
   private Timer timeout = new Timer();
   // Adjust this when it's appropriate
-  private double notThereYetTime = 3.0; // We really need to adjust this
-  private double angle = 0.0;
-  /** Creates a new SetAnglePID. 
-   * 
-   * 
-  */
+  private double notThereYetTime = 12.0; // We really need to adjust this
+  private double angle;
+
+  /** Creates a new SetAnglePID. */
   public SetAnglePID(double angle, BallHandler bh) {
     this.ballHandler = bh;
     this.angle = angle;
@@ -34,6 +32,7 @@ public class SetAnglePID extends CommandBase {
   public void initialize() {
     timeout.start();
     timeout.reset();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,9 +43,7 @@ public class SetAnglePID extends CommandBase {
 
   // Returns true when the command should end.
   @Override
-  public void end(boolean interrupted) {
-    ballHandler.setPivotPower(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
