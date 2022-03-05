@@ -271,6 +271,7 @@ public class BallHandler extends SubsystemBase {
     
     SmartDashboard.putNumber("Roller Ticks", getRollerTicks());
     SmartDashboard.putNumber("Roller Power", getRollerPower());
+    SmartDashboard.putNumber("Tested FF Voltage", testMaxPower.getDouble(0.5));
 
     SmartDashboard.putNumber("Pivot Angle", getPivotPosition());
     SmartDashboard.putNumber("Pivot Angle with No Offset", getPivotPositionNotOffset()); // Please use this to find the offset angle at horizontal power - for March 5th
