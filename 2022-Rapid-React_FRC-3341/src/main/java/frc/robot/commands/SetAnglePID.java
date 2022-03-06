@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.BallHandler;
 
@@ -14,9 +13,6 @@ import frc.robot.subsystems.BallHandler;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetAnglePID extends CommandBase {
   private BallHandler ballHandler;
-  private Timer timeout = new Timer();
-  // Adjust this when it's appropriate
-  private double notThereYetTime = 12.0; // We really need to adjust this
   private double angle;
 
   /** Creates a new SetAnglePID. */
@@ -29,11 +25,7 @@ public class SetAnglePID extends CommandBase {
   }
 
   @Override
-  public void initialize() {
-    timeout.start();
-    timeout.reset();
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -47,6 +39,6 @@ public class SetAnglePID extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return (ballHandler.atSetpoint() | timeout.get() >= notThereYetTime);
+    return ballHandler.atSetpoint();
   }
 }

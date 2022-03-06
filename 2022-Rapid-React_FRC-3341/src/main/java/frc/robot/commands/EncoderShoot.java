@@ -68,6 +68,5 @@ public class EncoderShoot extends CommandBase {
   @Override
   public boolean isFinished() {
     return (cargoTimer.get() >= cargoIsLaunchedTime);
-    
   }
 }

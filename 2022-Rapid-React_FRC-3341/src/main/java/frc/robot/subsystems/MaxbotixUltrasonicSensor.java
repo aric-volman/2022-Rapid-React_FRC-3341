@@ -93,7 +93,8 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
     }
 
   }
-    /** Gets the distance in meters that the sensor reports. */
+  
+  /** Gets the distance in meters that the sensor reports. */
   public double getDistance() {
     return finalDistance;
   }

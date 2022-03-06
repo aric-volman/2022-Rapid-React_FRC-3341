@@ -27,8 +27,6 @@ import frc.robot.RobotContainer;
 
 public class BallHandler extends SubsystemBase {
 
-  private static BallHandler ballHandler;
-
   private double wheelDiameter = 0.1; // Diameter in meters
   private double wheelCircumference = wheelDiameter*Math.PI;
 
@@ -38,7 +36,11 @@ public class BallHandler extends SubsystemBase {
 
   private double encoderConst = 1.0; // Flips the sign of the angle if needed
 
-  private double angle = 0.0; // In degrees
+  private double angle = -Constants.angularOffset; // In degrees
+
+  private double angularVelocity = 45.0; // In degrees/s
+
+  private double angularAcceleration = 15.0; // In degrees/s^2
 
   private double offset = Constants.angularOffset; // In degrees
 
@@ -84,6 +86,13 @@ public class BallHandler extends SubsystemBase {
     pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+   
+    // Motion Magic Velocity
+    pivot.configMotionCruiseVelocity(((angularVelocity/360.0)*4096.0*10.0), 5);
+
+    // Motion Magic Acceleration
+    pivot.configMotionAcceleration(((angularAcceleration/360.0)*4096.0*10.0), 5);
+
 
     roller.configFactoryDefault();
     roller.setInverted(false);
@@ -103,13 +112,6 @@ public class BallHandler extends SubsystemBase {
     rightFlywheelPID.setTolerance(flywheelTolerance);
     // pivotPID.setTolerance(pivotTolerance);
 
-  }
-
-  public BallHandler getInstance() {
-    if(ballHandler == null) {
-      ballHandler = new BallHandler();
-    }
-    return ballHandler;
   }
 
   public double getTicks(WPI_TalonSRX motor) {
@@ -180,7 +182,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public void setPivotAngle(double angle) {
-    this.angle = angle; // We want it to always "brake" with constantly running feedforward and PID
+    this.angle = angle; // We want it to always "brake" with constantly running feedforward and Motion Magic!
   }
 
   public boolean atSetpoint() {
@@ -215,7 +217,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public double getRawPivotPosition() {
-    return ((encoderConst*pivot.getSelectedSensorPosition(0)) - ((offset/360.00)*4096.0));
+    return ((encoderConst*pivot.getSelectedSensorPosition(0)) - ((offset/360.0)*4096.0));
   }
 
   public double getRawPivotPositionNotOffset() {
@@ -311,10 +313,9 @@ public class BallHandler extends SubsystemBase {
 
     // Uncomment this for Feedforward and Motion Magic.
     // We assume that the "angle" for Motion Magic is measured in native units, ticks
-    // double ffCos = Math.cos(Math.toRadians(angle));
-    // pivot.set(ControlMode.MotionMagic, getRawPivotPosition(), DemandType.ArbitraryFeedForward, ffCos*maxHorizontalPower);
+    // double ffCos = Math.cos(Math.toRadians(getRawPivotPosition()));
+    // pivot.set(ControlMode.MotionMagic, (angle/360.0)*4096.0, DemandType.ArbitraryFeedForward, ffCos*maxHorizontalPower);
 
   }
-
 
 }
