@@ -15,7 +15,11 @@ public class SetAnglePID extends CommandBase {
   private BallHandler ballHandler;
   private double angle;
 
-  /** Creates a new SetAnglePID. */
+  /** Creates a new SetAnglePID. 
+   * @param angle - The angle in degrees, measured from the horizontal position
+   * @param bh - The Ball Handler subsystem 
+  */
+  
   public SetAnglePID(double angle, BallHandler bh) {
     this.ballHandler = bh;
     this.angle = angle;

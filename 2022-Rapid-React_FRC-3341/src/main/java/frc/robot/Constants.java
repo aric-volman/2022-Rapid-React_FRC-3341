@@ -18,30 +18,29 @@ public final class Constants {
         public static final int MaxbotixUltrasonicSensor = 112;
     }
 
-    public static final class JoystickPorts {
-        public static final int JoystickPort1 = 0;
+    public static final class USBOrder {
+        public static final int LeftDriveJoystickPort = 0;
+        public static final int RightDriveJoystickPort = 1;
+        public static final int BallHandlerJoystickPort = 2;
     }
 
     public static final class DriveTrainPorts {
-        public static final int LeftDriveTalonPort = 1;
-        public static final int RightDriveTalonPort = 2;
+        public static final int LeftDriveTalonPort = 2;
+        public static final int RightDriveTalonPort = 3;
+        public static final int LeftDriveVictorPort = 4;
+        public static final int RightDriveVictorPort = 5;
     }
 
-    public static final class MotorPorts {
-            public static final int leftFlywheelPort = 16;
-            public static final int rightFlywheelPort = 17;
-            public static final int pivotPort = 14;
-            public static final int rollerPort = 15;
-         } 
-    
+    public static final class BallHandlerPorts {
+        public static final int leftFlywheelPort = 16;
+        public static final int rightFlywheelPort = 17;
+        public static final int pivotPort = 14;
+        public static final int rollerPort = 15;
+    }
+
     public static final class JoystickAxis {
         public static final int  XAxis = 0;
         public static final int YAxis = 1;
-    } 
-
-    public static final class USBOrder {
-        public static final int Zero = 0;
-        public static final int One = 1;
     }
     
     public static final class leftFlywheelPIDConsts { // Tested on last year's chassis, not this year!
@@ -56,9 +55,9 @@ public final class Constants {
         public static double pidD = 0;
     }
 
-    public static final class pivotPIDConsts { // Tested on last year's chassis, not this year!
-        public static final double pidP = 0.014;
-        public static final double pidI = 0.01;
+    public static final class pivotPIDConsts { // Still a WIP
+        public static final double pidP = 0.008;
+        public static final double pidI = 0;
         public static final double pidD = 0;
     }
 
@@ -80,5 +79,5 @@ public final class Constants {
         public static final double kV = 0.046839;
     }
     
-    public static final double angularOffset = 10.0; // Not tested yet
+    public static final double angularOffset = -92.0;
 }

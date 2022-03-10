@@ -19,7 +19,9 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
 
-  private static Joystick joystick;
+  private static Joystick leftDriveJoystick;
+  private static Joystick rightDriveJoystick;
+  private static Joystick ballHandlerJoystick;
   private static JoystickButton shootbutton;
   private static JoystickButton intakebutton;
   private static JoystickButton shootanglebutton;
@@ -29,19 +31,23 @@ public class RobotContainer {
 
   private double flywheelvelocity = 1.0;
 
-  private double angle = 30;
+  private double angle = 45;
 
   private static final BallHandler ballHandler = new BallHandler();
+  private DriveTrain dt;
+  private TankDrive td;
 
   private MaxbotixUltrasonicSensor ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
   private InfraredSensor infrared = new InfraredSensor();
 
-  // The robot's subsystems and commands are defined here...
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
-    joystick = new Joystick(Constants.JoystickPorts.JoystickPort1);
+    ballHandlerJoystick = new Joystick(Constants.USBOrder.BallHandlerJoystickPort);
+    dt = new DriveTrain();
+    td = new TankDrive(dt, leftDriveJoystick, rightDriveJoystick);
+    dt.setDefaultCommand(td);
     // Configure the button bindings
     configureButtonBindings();
     
@@ -56,17 +62,17 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Button Bindings -- a perpetual WIP
     
-    intakebutton = new JoystickButton(joystick, 1);
+    intakebutton = new JoystickButton(ballHandlerJoystick, 1);
     intakebutton.whenPressed(new Intake(ballHandler, infrared));
 
-    shootbutton = new JoystickButton(joystick, 2);
-    shootbutton.whenPressed(new EncoderShoot(flywheelvelocity, ballHandler)); // Velocity not used for now, shoots at 1800 RPM
+    // shootbutton = new JoystickButton(ballHandlerJoystick, 2);
+    // shootbutton.whenPressed(new EncoderShoot(flywheelvelocity, ballHandler)); // Velocity not used for now, shoots at 2200 RPM
 
-    shootanglebutton = new JoystickButton(joystick, 5);
-    shootanglebutton.toggleWhenPressed(new SetAnglePID(angle, ballHandler), false);
+    // shootanglebutton = new JoystickButton(ballHandlerJoystick, 5);
+    // shootanglebutton.toggleWhenPressed(new SetAnglePID(angle, ballHandler), false);
     
-    zeroanglebutton = new JoystickButton(joystick, 6);
-    zeroanglebutton.whenPressed(new SetAnglePID(-Constants.angularOffset, ballHandler), false);
+    // zeroanglebutton = new JoystickButton(ballHandlerJoystick, 6);
+    // zeroanglebutton.whenPressed(new SetAnglePID(-Constants.angularOffset, ballHandler), false);
     
     /* Overriden by subsystem
     setanglebutton = new JoystickButton(joystick, 3);
@@ -84,8 +90,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
 
-  public static Joystick getJoystick() {
-    return joystick;
+  public static Joystick getBallHandlerJoystick() {
+    return ballHandlerJoystick;
   }
  
 }

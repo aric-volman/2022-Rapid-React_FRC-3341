@@ -1,0 +1,58 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon SRX[14]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[16]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[16]/Analog In": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[16]/Pulse Width Input": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[16]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[17]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Victor SPX[15]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/BallHandler": "Subsystem",
+      "/LiveWindow/InfraredSensor": "Subsystem",
+      "/LiveWindow/MaxbotixUltrasonicSensor": "Subsystem",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon SRX [14]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [16]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [17]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Victor SPX [15]": "Motor Controller"
+    }
+  }
+}

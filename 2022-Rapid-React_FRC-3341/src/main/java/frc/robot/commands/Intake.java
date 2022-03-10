@@ -11,8 +11,11 @@ public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
   private Timer timeout = new Timer();
-  private double notThereYetTime = 3.0; // We really need to adjust this
-  /** Creates a new Intake. */
+  private double notThereYetTime = 5.0; // We really need to adjust this
+  /** Creates a new Intake. 
+   * @param bh - The BallHandler subsystem
+   * @param ir - The Infrared Sensor subsystem
+  */
   public Intake(BallHandler bh, InfraredSensor ir) {
     ballHandler = bh;
     infrared = ir;

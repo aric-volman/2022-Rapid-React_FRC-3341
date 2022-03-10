@@ -11,7 +11,7 @@ public class InfraredSensor extends SubsystemBase {
   DigitalInput InfraredInput;
 
   public InfraredSensor() {
-    InfraredInput = new DigitalInput(0);
+    InfraredInput = new DigitalInput(9);
   }
 
   public boolean get(){

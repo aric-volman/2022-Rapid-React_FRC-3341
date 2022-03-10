@@ -6,16 +6,15 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
+// import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -32,7 +31,7 @@ public class BallHandler extends SubsystemBase {
 
   private double flywheelTolerance = 0.05; // Tolerance in m/s
 
-  private double pivotTolerance = 1; // Hopefully not needed
+  private double pivotTolerance = 1.0; // Hopefully not needed
 
   private double encoderConst = 1.0; // Flips the sign of the angle if needed
 
@@ -44,18 +43,18 @@ public class BallHandler extends SubsystemBase {
 
   private double offset = Constants.angularOffset; // In degrees
 
-  private double maxHorizontalPower = 0.5; // Please change this for March 5th, first testing with Smartdashboard
+  private double maxHorizontalPower = 0.56; // Percent of volts
 
   // Change ports later...
-  private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.MotorPorts.leftFlywheelPort);
-  private final WPI_TalonSRX rightFlywheel = new WPI_TalonSRX(Constants.MotorPorts.rightFlywheelPort);
+  private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.leftFlywheelPort);
+  private final WPI_TalonSRX rightFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.rightFlywheelPort);
   
-  private final WPI_TalonSRX pivot = new WPI_TalonSRX(Constants.MotorPorts.pivotPort);
-  private final WPI_VictorSPX roller = new WPI_VictorSPX(Constants.MotorPorts.rollerPort);
+  private final WPI_TalonSRX pivot = new WPI_TalonSRX(Constants.BallHandlerPorts.pivotPort);
+  private final WPI_VictorSPX roller = new WPI_VictorSPX(Constants.BallHandlerPorts.rollerPort);
 
   private ShuffleboardTab pidTab = Shuffleboard.getTab("Flywheel PID");
 
-  private ShuffleboardTab testTab = Shuffleboard.getTab("Testing Tab (Voltage)");
+  // private ShuffleboardTab testTab = Shuffleboard.getTab("Testing Tab (Voltage)");
   
   private NetworkTableEntry leftFlywheelTestInputPIDP = pidTab.add("Left Flywheel PID P", Constants.leftFlywheelPIDConsts.pidP).getEntry();
   private NetworkTableEntry leftFlywheelTestInputPIDI = pidTab.add("Left Flywheel PID I", Constants.leftFlywheelPIDConsts.pidI).getEntry();
@@ -65,16 +64,16 @@ public class BallHandler extends SubsystemBase {
   private NetworkTableEntry rightFlywheelTestInputPIDI = pidTab.add("Right Flywheel PID I", Constants.rightFlywheelPIDConsts.pidI).getEntry();
   private NetworkTableEntry rightFlywheelTestInputPIDD = pidTab.add("Right Flywheel PID D", Constants.rightFlywheelPIDConsts.pidD).getEntry();
 
-  private NetworkTableEntry testMaxPower = testTab.add("Test Voltage", 0.5).getEntry();
+  // private NetworkTableEntry testMaxPower = testTab.add("Test Voltage", 0.5).getEntry();
 
-  // private NetworkTableEntry pivotTestInputPIDP = pidTab.add("Pivot PID P", Constants.pivotPIDConsts.pidP).getEntry();
-  // private NetworkTableEntry pivotTestInputPIDI = pidTab.add("Pivot PID I", Constants.pivotPIDConsts.pidI).getEntry();
-  // private NetworkTableEntry pivotTestInputPIDD = pidTab.add("Pivot PID D", Constants.pivotPIDConsts.pidD).getEntry();
+  private NetworkTableEntry pivotTestInputPIDP = pidTab.add("Pivot PID P", Constants.pivotPIDConsts.pidP).getEntry();
+  private NetworkTableEntry pivotTestInputPIDI = pidTab.add("Pivot PID I", Constants.pivotPIDConsts.pidI).getEntry();
+  private NetworkTableEntry pivotTestInputPIDD = pidTab.add("Pivot PID D", Constants.pivotPIDConsts.pidD).getEntry();
 
-  // Overriden with testing Constants for flywheel
+  // Overriden with testing Constants for flywheels and pivot
   private final PIDController leftFlywheelPID = new PIDController(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));
   private final PIDController rightFlywheelPID = new PIDController(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
-  // private final PIDController pivotPID = new PIDController(rightFlywheelTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
+  private final PIDController pivotPID = new PIDController(rightFlywheelTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
 
   private SimpleMotorFeedforward leftFlywheelFF = new SimpleMotorFeedforward(Constants.leftFlywheelFF.kS, Constants.leftFlywheelFF.kV, Constants.leftFlywheelFF.kA);
   private SimpleMotorFeedforward rightFlywheelFF = new SimpleMotorFeedforward(Constants.rightFlywheelFF.kS, Constants.rightFlywheelFF.kV, Constants.rightFlywheelFF.kA);
@@ -86,6 +85,7 @@ public class BallHandler extends SubsystemBase {
     pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    pivot.configPeakCurrentLimit(20, 5);
    
     // Motion Magic Velocity
     pivot.configMotionCruiseVelocity(((angularVelocity/360.0)*4096.0*10.0), 5);
@@ -98,11 +98,11 @@ public class BallHandler extends SubsystemBase {
     roller.setInverted(false);
 
     leftFlywheel.configFactoryDefault();
-    leftFlywheel.setInverted(false);
+    leftFlywheel.setInverted(true);
     leftFlywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
     rightFlywheel.configFactoryDefault();
-    rightFlywheel.setInverted(true);
+    rightFlywheel.setInverted(false);
     rightFlywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
     leftFlywheel.setInverted(true);
@@ -110,7 +110,7 @@ public class BallHandler extends SubsystemBase {
 
     leftFlywheelPID.setTolerance(flywheelTolerance);
     rightFlywheelPID.setTolerance(flywheelTolerance);
-    // pivotPID.setTolerance(pivotTolerance);
+    pivotPID.setTolerance(pivotTolerance);
 
   }
 
@@ -182,12 +182,13 @@ public class BallHandler extends SubsystemBase {
   }
 
   public void setPivotAngle(double angle) {
-    this.angle = angle; // We want it to always "brake" with constantly running feedforward and Motion Magic!
+    this.angle = angle; // We want it to always "brake" with constantly running feedforward!
+    pivotPID.setSetpoint(this.angle);
   }
 
   public boolean atSetpoint() {
-    // return pivotPID.atSetpoint();
-    return (this.angle == getPivotPosition()); // We might want to revisit this one
+    return pivotPID.atSetpoint();
+    // return (this.angle == getPivotPosition()); // We might want to revisit this one
   }
 
   public boolean isForwardLimitClosed() {
@@ -209,11 +210,11 @@ public class BallHandler extends SubsystemBase {
   }
 
   public double getPivotPosition(){
-    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0) - offset); // OFFSETTED is angle here :) for March 5th. The negative const might not be needed
+    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0) - offset); // OFFSETTED is angle here. The negative const might not be needed
   }
 
   public double getPivotPositionNotOffset() {
-    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0)); // Please test angle here :) for March 5th
+    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0));
   }
 
   public double getRawPivotPosition() {
@@ -273,49 +274,53 @@ public class BallHandler extends SubsystemBase {
     
     SmartDashboard.putNumber("Roller Ticks", getRollerTicks());
     SmartDashboard.putNumber("Roller Power", getRollerPower());
-    SmartDashboard.putNumber("Tested FF Voltage", testMaxPower.getDouble(0.5));
 
     SmartDashboard.putNumber("Pivot Angle", getPivotPosition());
     SmartDashboard.putNumber("Pivot Angle with No Offset", getPivotPositionNotOffset()); // Please use this to find the offset angle at horizontal power - for March 5th
     SmartDashboard.putNumber("Raw Pivot Angle with No Offset", getRawPivotPositionNotOffset()); 
     SmartDashboard.putNumber("Pivot Power", getPivotPower());
 
+    SmartDashboard.putNumber("Pivot P", pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP));
+    SmartDashboard.putNumber("Pivot I", pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI));
+
     // A return of 'false' means that the limit switch is active
-    SmartDashboard.putBoolean("Forward Limit Switch: ", isForwardLimitClosed());
-    SmartDashboard.putBoolean("Reverse Limit Switch: ", isReverseLimitClosed());
-    
+    SmartDashboard.putBoolean("Forward Limit Switch: ", !isForwardLimitClosed());
+    SmartDashboard.putBoolean("Reverse Limit Switch: ", !isReverseLimitClosed());
+
+    /*
     if (pivot.isFwdLimitSwitchClosed() == 0) {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
+    */
 
     // Remove the button logic if we need to map these buttons eventually
     // Bottom buttons on the top of the controller
-    if (RobotContainer.getJoystick().getRawButton(3)) {
+    if (RobotContainer.getBallHandlerJoystick().getRawButton(3)) {
       setRollerPower(1.0);
-    } else if (RobotContainer.getJoystick().getRawButton(4)) {
+    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(4)) {
       setRollerPower(-1.0);
     } else {
       setRollerPower(0.0);
     }
 
-    // setRollerPower(RobotContainer.getJoystick().getY());
-    // setPivotPower(RobotContainer.getJoystick().getY());
-    setFlywheelPower(RobotContainer.getJoystick().getY());
-
-    // If the Shuffleboard input doesn't work, just set the power manually and test from there
-    // Comment this out when testing Feedforward and Motion Magic
-    setPivotPower(testMaxPower.getDouble(0.5));
+    // setRollerPower(RobotContainer.getBallHandlerJoystick().getY());
+    // setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
+    setFlywheelPower(RobotContainer.getBallHandlerJoystick().getY());
 
     // These methods just set the PID controller's constants so that we can tune them if needed
     leftFlywheelPID.setPID(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));
     rightFlywheelPID.setPID(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
-    // pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
+    pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
 
     // Uncomment this for Feedforward and Motion Magic.
     // We assume that the "angle" for Motion Magic is measured in native units, ticks
     // double ffCos = Math.cos(Math.toRadians(getRawPivotPosition()));
     // pivot.set(ControlMode.MotionMagic, (angle/360.0)*4096.0, DemandType.ArbitraryFeedForward, ffCos*maxHorizontalPower);
 
+    // New pivot code:
+    double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
+    SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
+    // pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
   }
 
 }

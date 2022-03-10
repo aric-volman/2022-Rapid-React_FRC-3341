@@ -23,7 +23,10 @@ public class EncoderShoot extends CommandBase {
 
   Timer cargoTimer = new Timer();
 
-  /** Creates a new EncoderShoot. */
+  /** Creates a new EncoderShoot. 
+   * @param velocity - We hope we can put tangential velocity here in the near future, currently useless and unassigned :)
+   * @param bh - The Ball Handler subsystem
+  */
   public EncoderShoot(double velocity, BallHandler bh) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.ballHandler = bh;
@@ -51,7 +54,7 @@ public class EncoderShoot extends CommandBase {
     // if (ballHandler.flywheelWithinErrorMargin()) {
     
     ballHandler.setFlywheelPower(1.0);
-    if (ballHandler.getAverageRPM() >= 1800 && !isFlywheelAtSpeed) { // RPM based
+    if (ballHandler.getAverageRPM() >= 2200 && !isFlywheelAtSpeed) { // RPM based
       ballHandler.setRollerPower(rollerpower);
       isFlywheelAtSpeed = true;
     }
