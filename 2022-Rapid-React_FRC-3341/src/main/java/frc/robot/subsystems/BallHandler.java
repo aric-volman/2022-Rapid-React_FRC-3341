@@ -31,7 +31,7 @@ public class BallHandler extends SubsystemBase {
 
   private double flywheelTolerance = 0.05; // Tolerance in m/s
 
-  private double pivotTolerance = 1.0; // Hopefully not needed
+  private double pivotTolerance = 1.0;
 
   private double encoderConst = 1.0; // Flips the sign of the angle if needed
 
@@ -276,7 +276,7 @@ public class BallHandler extends SubsystemBase {
     SmartDashboard.putNumber("Roller Power", getRollerPower());
 
     SmartDashboard.putNumber("Pivot Angle", getPivotPosition());
-    SmartDashboard.putNumber("Pivot Angle with No Offset", getPivotPositionNotOffset()); // Please use this to find the offset angle at horizontal power - for March 5th
+    SmartDashboard.putNumber("Pivot Angle with No Offset", getPivotPositionNotOffset()); // Use this to find the offset angle at horizontal power
     SmartDashboard.putNumber("Raw Pivot Angle with No Offset", getRawPivotPositionNotOffset()); 
     SmartDashboard.putNumber("Pivot Power", getPivotPower());
 

@@ -18,19 +18,16 @@ public class EncoderShoot extends CommandBase {
   private double rollerpower = 1.0;
   private boolean isFlywheelAtSpeed;
   private double rollBackTime = 0.5; // Something that needs to be tested
-  private double cargoIsLaunchedTime = 4.0; // Arguably the most important timer
-  private double velocity;
+  private double cargoIsLaunchedTime = 3.0; // Arguably the most important timer
 
   Timer cargoTimer = new Timer();
 
   /** Creates a new EncoderShoot. 
-   * @param velocity - We hope we can put tangential velocity here in the near future, currently useless and unassigned :)
    * @param bh - The Ball Handler subsystem
   */
-  public EncoderShoot(double velocity, BallHandler bh) {
+  public EncoderShoot(BallHandler bh) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.ballHandler = bh;
-    this.velocity = velocity;
     cargoTimer.start();
     addRequirements(ballHandler); // If you put this before assignment, bad stuff happens
   }
