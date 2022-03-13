@@ -35,7 +35,7 @@ public class BallHandler extends SubsystemBase {
 
   private double encoderConst = 1.0; // Flips the sign of the angle if needed
 
-  private double angle = -Constants.angularOffset; // In degrees
+  private double angle = 90.0; // In degrees
 
   private double angularVelocity = 45.0; // In degrees/s
 
@@ -43,7 +43,7 @@ public class BallHandler extends SubsystemBase {
 
   private double offset = Constants.angularOffset; // In degrees
 
-  private double maxHorizontalPower = 0.56; // Percent of volts
+  private double maxHorizontalPower = -0.2; // Percent of volts
 
   // Change ports later...
   private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.leftFlywheelPort);
@@ -86,7 +86,8 @@ public class BallHandler extends SubsystemBase {
     pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     pivot.configPeakCurrentLimit(20, 5);
-   
+    pivot.setNeutralMode(NeutralMode.Brake);
+
     // Motion Magic Velocity
     pivot.configMotionCruiseVelocity(((angularVelocity/360.0)*4096.0*10.0), 5);
 
@@ -210,7 +211,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public double getPivotPosition(){
-    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0) - offset); // OFFSETTED is angle here. The negative const might not be needed
+    return (((encoderConst*pivot.getSelectedSensorPosition(0)/4096.0)*360.0) + offset); // OFFSETTED is angle here. The negative const might not be needed
   }
 
   public double getPivotPositionNotOffset() {
@@ -287,31 +288,47 @@ public class BallHandler extends SubsystemBase {
     SmartDashboard.putBoolean("Forward Limit Switch: ", isForwardLimitClosed());
     SmartDashboard.putBoolean("Reverse Limit Switch: ", isReverseLimitClosed());
 
-    /*
-    if (pivot.isFwdLimitSwitchClosed() == 0) {
+
+    if (pivot.isRevLimitSwitchClosed() == 0) {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
-    */
 
     // Remove the button logic if we need to map these buttons eventually
     // Bottom buttons on the top of the controller
-    if (RobotContainer.getBallHandlerJoystick().getRawButton(3)) {
-      setRollerPower(1.0);
-    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(4)) {
+    if (RobotContainer.getBallHandlerJoystick().getRawButton(7)) {
+      setRollerPower(1.0); //Intake
+    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(8)) {
       setRollerPower(-1.0);
     } else {
       setRollerPower(0.0);
     }
 
-    if (RobotContainer.getBallHandlerJoystick().getRawButton(5)) {
+    if (RobotContainer.getBallHandlerJoystick().getRawButton(9)) {
       setFlywheelPower(1.0);
-    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(6)) {
-      setFlywheelPower(-1.0);
+    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(10)) {
+      setFlywheelPower(-0.2); // Intake
     } else {
       setFlywheelPower(0.0);
     }
+
+    if (Math.abs(RobotContainer.getBallHandlerJoystick().getY()) >= 0.1) {
+      setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
+    } 
+    else {
+      double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
+      SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
+      pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
+    }
+  
+    if (RobotContainer.getBallHandlerJoystick().getRawButton(11)) {
+      angle -= 3.0;
+      setPivotAngle(angle);
+    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(12)) {
+      angle += 3.0;
+      setPivotAngle(angle);
+    }
     // setRollerPower(RobotContainer.getBallHandlerJoystick().getY());
-    setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
+    // setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
     // setFlywheelPower(RobotContainer.getBallHandlerJoystick().getY());
 
     // These methods just set the PID controller's constants so that we can tune them if needed

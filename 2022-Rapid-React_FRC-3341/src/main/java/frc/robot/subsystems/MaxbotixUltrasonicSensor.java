@@ -20,11 +20,8 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
   private int lowByteTwosComplement;
 
   private double finalDistance;
-  private double reportedDistanceWithNegative;
   private double displacement = 0.0;
   private double distance;
-
-  private boolean isBusy = false;
 
   private Timer i2cTimer = new Timer();
 
@@ -38,8 +35,8 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
 
     // The RoboRIO uses 7 bit addressing, so the address here is 112
     i2cController = new I2C(i2cPort, address);
-    i2cTimer.start();
     i2cTimer.reset();
+    i2cTimer.start();
   }
 
   @Override
@@ -50,10 +47,8 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
     
     requestAndReadDistance();
 
-    if (reportedDistanceWithNegative != -1.0) {
-      finalDistance = distance - displacement;
-      SmartDashboard.putNumber("Range", finalDistance);
-    }
+    finalDistance = distance - displacement;
+    SmartDashboard.putNumber("Range", finalDistance);
 
   }
 
@@ -81,23 +76,11 @@ public class MaxbotixUltrasonicSensor extends SubsystemBase {
   }
 
   private void requestAndReadDistance() {
-    if (!isBusy) {
-      isBusy = true;
+    if (canRead()) { // Mfr. recommends 80 to 100 ms delay between request and read
+      readDistanceValue();
+      requestDistanceValue();
       i2cTimer.reset();
-      if (canRead()) {
-        requestDistanceValue();
-        i2cTimer.reset();
-        if (canRead()) { // Mfr. recommends 80 to 100 ms delay between request and read
-          readDistanceValue();
-          i2cTimer.reset();
-        }
-      }
-      isBusy = false;
-
-    } else {
-      distance = -1.0;
     }
-
   }
   
   /** Gets the distance in meters that the sensor reports. */

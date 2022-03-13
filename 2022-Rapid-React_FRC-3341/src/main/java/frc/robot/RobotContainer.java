@@ -26,6 +26,7 @@ public class RobotContainer {
   private static JoystickButton intakebutton;
   private static JoystickButton shootanglebutton;
   private static JoystickButton zeroanglebutton;
+  private static JoystickButton maxanglebutton;
   // private static JoystickButton setanglebutton;
   // private static JoystickButton resetanglebutton;
 
@@ -60,25 +61,21 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Button Bindings -- a perpetual WIP
     
-    intakebutton = new JoystickButton(ballHandlerJoystick, 1);
-    intakebutton.whenPressed(new Intake(ballHandler, infrared));
+    // intakebutton = new JoystickButton(ballHandlerJoystick, 1);
+    // intakebutton.whenPressed(new Intake(ballHandler, infrared));
 
     //shootbutton = new JoystickButton(ballHandlerJoystick, 2);
     //shootbutton.(new EncoderShoot(ballHandler)); // Velocity not used for now, shoots at 2200 RPM
-/*
-    shootanglebutton = new JoystickButton(ballHandlerJoystick, 5);
+    /*
+    shootanglebutton = new JoystickButton(ballHandlerJoystick, 1);
     shootanglebutton.toggleWhenPressed(new SetAnglePID(angle, ballHandler), false);
     
-    zeroanglebutton = new JoystickButton(ballHandlerJoystick, 6);
+    zeroanglebutton = new JoystickButton(ballHandlerJoystick, 2);
     zeroanglebutton.whenPressed(new SetAnglePID(-Constants.angularOffset, ballHandler), false);
     
      Overriden by subsystem
-    setanglebutton = new JoystickButton(joystick, 3);
-    setanglebutton.whenPressed(new SetAnglePID(angle, ballHandler), false); // Changes it to non-interruptable
-    
-    resetanglebutton = new JoystickButton(joystick, 4);
-    //resetanglebutton.toggleWhenPressed(new SetAngle(0));
-    resetanglebutton.whenPressed(new SetAnglePID(0.0, ballHandler), false);
+    maxanglebutton = new JoystickButton(joystick, 12); // We ran out of buttons!
+    maxanglebutton.whenPressed(new SetAnglePID(Constants.maxAngle, ballHandler), false); // Changes it to non-interruptable
     */
   }
 

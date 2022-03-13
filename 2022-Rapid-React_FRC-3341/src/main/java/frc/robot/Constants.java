@@ -56,7 +56,7 @@ public final class Constants {
     }
 
     public static final class pivotPIDConsts { // Still a WIP
-        public static final double pidP = 0.008;
+        public static final double pidP = 0.002;
         public static final double pidI = 0;
         public static final double pidD = 0;
     }
@@ -79,5 +79,5 @@ public final class Constants {
         public static final double kV = 0.046839;
     }
     
-    public static final double angularOffset = -92.0;
+    public static final double angularOffset = 90.0;
 }
