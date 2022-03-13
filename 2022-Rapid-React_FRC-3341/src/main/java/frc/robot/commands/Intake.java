@@ -3,15 +3,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.InfraredSensor;
 
 public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
-  private Timer timeout = new Timer();
-  private double notThereYetTime = 1.0; // We really need to adjust this
+  // private Timer timeout = new Timer();
+  // private double notThereYetTime = 1.0; // We really need to adjust this
   /** Creates a new Intake. 
    * @param bh - The BallHandler subsystem
    * @param ir - The Infrared Sensor subsystem
@@ -26,8 +25,8 @@ public class Intake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeout.start();
-    timeout.reset();
+    // timeout.start();
+    // timeout.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +46,7 @@ public class Intake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return infrared.get();
-    return (infrared.get() | timeout.get() >= notThereYetTime);
+    return infrared.get();
+    // return (infrared.get() | timeout.get() >= notThereYetTime);
   }
 }

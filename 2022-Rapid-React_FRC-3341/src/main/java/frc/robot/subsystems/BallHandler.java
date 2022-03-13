@@ -192,7 +192,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public boolean isForwardLimitClosed() {
-    if(pivot.isFwdLimitSwitchClosed() == 0) {
+    if(pivot.isFwdLimitSwitchClosed() == 1) {
       return true;
     }
     else {
@@ -201,7 +201,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public boolean isReverseLimitClosed() {
-    if(pivot.isRevLimitSwitchClosed() == 0) {
+    if(pivot.isRevLimitSwitchClosed() == 1) {
       return true;
     }
     else {
@@ -283,9 +283,9 @@ public class BallHandler extends SubsystemBase {
     SmartDashboard.putNumber("Pivot P", pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP));
     SmartDashboard.putNumber("Pivot I", pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI));
 
-    // A return of 'false' means that the limit switch is active
-    SmartDashboard.putBoolean("Forward Limit Switch: ", !isForwardLimitClosed());
-    SmartDashboard.putBoolean("Reverse Limit Switch: ", !isReverseLimitClosed());
+    // A return of 'true' means that the limit switch is active
+    SmartDashboard.putBoolean("Forward Limit Switch: ", isForwardLimitClosed());
+    SmartDashboard.putBoolean("Reverse Limit Switch: ", isReverseLimitClosed());
 
     /*
     if (pivot.isFwdLimitSwitchClosed() == 0) {
