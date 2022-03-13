@@ -43,9 +43,9 @@ public class RobotContainer {
   public RobotContainer() {
     
     ballHandlerJoystick = new Joystick(Constants.USBOrder.BallHandlerJoystickPort);
-    dt = new DriveTrain();
-    td = new TankDrive(dt, leftDriveJoystick, rightDriveJoystick);
-    dt.setDefaultCommand(td);
+    // dt = new DriveTrain();
+    // td = new TankDrive(dt, leftDriveJoystick, rightDriveJoystick);
+    // dt.setDefaultCommand(td);
     // Configure the button bindings
     configureButtonBindings();
     
@@ -63,16 +63,16 @@ public class RobotContainer {
     intakebutton = new JoystickButton(ballHandlerJoystick, 1);
     intakebutton.whenPressed(new Intake(ballHandler, infrared));
 
-    shootbutton = new JoystickButton(ballHandlerJoystick, 2);
-    shootbutton.whenPressed(new EncoderShoot(ballHandler)); // Velocity not used for now, shoots at 2200 RPM
-
+    //shootbutton = new JoystickButton(ballHandlerJoystick, 2);
+    //shootbutton.(new EncoderShoot(ballHandler)); // Velocity not used for now, shoots at 2200 RPM
+/*
     shootanglebutton = new JoystickButton(ballHandlerJoystick, 5);
     shootanglebutton.toggleWhenPressed(new SetAnglePID(angle, ballHandler), false);
     
     zeroanglebutton = new JoystickButton(ballHandlerJoystick, 6);
     zeroanglebutton.whenPressed(new SetAnglePID(-Constants.angularOffset, ballHandler), false);
     
-    /* Overriden by subsystem
+     Overriden by subsystem
     setanglebutton = new JoystickButton(joystick, 3);
     setanglebutton.whenPressed(new SetAnglePID(angle, ballHandler), false); // Changes it to non-interruptable
     

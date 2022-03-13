@@ -11,7 +11,7 @@ public class Intake extends CommandBase {
   private BallHandler ballHandler;
   private InfraredSensor infrared;
   private Timer timeout = new Timer();
-  private double notThereYetTime = 5.0; // We really need to adjust this
+  private double notThereYetTime = 1.0; // We really need to adjust this
   /** Creates a new Intake. 
    * @param bh - The BallHandler subsystem
    * @param ir - The Infrared Sensor subsystem
@@ -33,13 +33,9 @@ public class Intake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!ballHandler.isForwardLimitClosed()){
-      ballHandler.setPivotAngle(-Constants.angularOffset); // We'd prefer not to set the power directly
-    } else {
-      ballHandler.setFlywheelPower(-1.0); // Negative should mean "suck", this might be too strong
-      ballHandler.setRollerPower(-1.0); // Negative should mean "suck"
-      } 
-    }
+    ballHandler.setFlywheelPower(-1.0); // Negative should mean "suck", this might be too strong
+    ballHandler.setRollerPower(-1.0); // Negative should mean "suck"
+  }
 
   // Called once the command ends or is interrupted.
   @Override

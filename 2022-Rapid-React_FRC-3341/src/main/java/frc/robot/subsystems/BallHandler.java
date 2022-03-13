@@ -226,7 +226,7 @@ public class BallHandler extends SubsystemBase {
   }
 
   public void setPivotPower(double power) {
-    pivot.set(-1.0*power); // This is what was tested March 1st
+    pivot.set(power); // This is what was tested March 1st
   }
 
   public double getPivotPower() {
@@ -303,9 +303,16 @@ public class BallHandler extends SubsystemBase {
       setRollerPower(0.0);
     }
 
+    if (RobotContainer.getBallHandlerJoystick().getRawButton(5)) {
+      setFlywheelPower(1.0);
+    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(6)) {
+      setFlywheelPower(-1.0);
+    } else {
+      setFlywheelPower(0.0);
+    }
     // setRollerPower(RobotContainer.getBallHandlerJoystick().getY());
-    // setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
-    setFlywheelPower(RobotContainer.getBallHandlerJoystick().getY());
+    setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
+    // setFlywheelPower(RobotContainer.getBallHandlerJoystick().getY());
 
     // These methods just set the PID controller's constants so that we can tune them if needed
     leftFlywheelPID.setPID(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));

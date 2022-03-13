@@ -59,10 +59,10 @@ public class DriveTrain extends SubsystemBase
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
-    if(Math.abs(leftSpeed) < 0.1){
+    if(Math.abs(leftSpeed) < 0.1) {
       leftSpeed = 0;
     }
-    if(Math.abs(rightSpeed) < 0.1){
+    if(Math.abs(rightSpeed) < 0.1) {
       rightSpeed = 0;
     } 
     _rightDriveTalon.set(ControlMode.PercentOutput, -rightSpeed);  

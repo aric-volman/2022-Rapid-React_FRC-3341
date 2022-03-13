@@ -19,9 +19,9 @@ public final class Constants {
     }
 
     public static final class USBOrder {
-        public static final int LeftDriveJoystickPort = 0;
-        public static final int RightDriveJoystickPort = 1;
-        public static final int BallHandlerJoystickPort = 2;
+        public static final int LeftDriveJoystickPort = 1;
+        public static final int RightDriveJoystickPort = 2;
+        public static final int BallHandlerJoystickPort = 0;
     }
 
     public static final class DriveTrainPorts {

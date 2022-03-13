@@ -15,12 +15,13 @@ public class EncoderShoot extends CommandBase {
   private BallHandler ballHandler;
 
   private double minimumRollerPower = 1.0; // We also need to test for this if we have the time
-  private double rollerpower = 1.0;
+  private double rollerPower = 1.0;
   private boolean isFlywheelAtSpeed;
   private double rollBackTime = 0.5; // Something that needs to be tested
   private double cargoIsLaunchedTime = 3.0; // Arguably the most important timer
 
   Timer cargoTimer = new Timer();
+  Timer rollBackTimer = new Timer();
 
   /** Creates a new EncoderShoot. 
    * @param bh - The Ball Handler subsystem
@@ -29,6 +30,9 @@ public class EncoderShoot extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.ballHandler = bh;
     cargoTimer.start();
+    cargoTimer.reset();
+    rollBackTimer.start();
+    rollBackTimer.reset();
     addRequirements(ballHandler); // If you put this before assignment, bad stuff happens
   }
 
@@ -37,10 +41,7 @@ public class EncoderShoot extends CommandBase {
   public void initialize() {
     isFlywheelAtSpeed = false;
     ballHandler.resetFlywheelEncoders();
-    cargoTimer.reset();
-    ballHandler.setRollerPower(-minimumRollerPower);
-    Timer.delay(rollBackTime);
-    ballHandler.setRollerPower(0.0);
+    rollBackTimer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,11 +50,16 @@ public class EncoderShoot extends CommandBase {
     // Comment these out if you feel PID is needed
     // ballHandler.setFlywheelConstantVelocity(velocity);
     // if (ballHandler.flywheelWithinErrorMargin()) {
-    
-    ballHandler.setFlywheelPower(1.0);
-    if (ballHandler.getAverageRPM() >= 2200 && !isFlywheelAtSpeed) { // RPM based
-      ballHandler.setRollerPower(rollerpower);
-      isFlywheelAtSpeed = true;
+    if (rollBackTimer.get() < rollBackTime) {
+      ballHandler.setRollerPower(-minimumRollerPower);
+    } else if (rollBackTimer.get() >= rollBackTime) {
+        if (ballHandler.getAverageRPM() < 2200) {
+          ballHandler.setRollerPower(0.0);
+          ballHandler.setFlywheelPower(1.0);
+        } else if (ballHandler.getAverageRPM() >= 2200 && !isFlywheelAtSpeed) { // RPM based
+          ballHandler.setRollerPower(rollerPower);
+          isFlywheelAtSpeed = true;
+        }
     }
   }
 
