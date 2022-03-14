@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -41,9 +42,13 @@ public class BallHandler extends SubsystemBase {
 
   private double angularAcceleration = 15.0; // In degrees/s^2
 
-  private double offset = Constants.angularOffset; // In degrees
+  // In degrees, this is added, not subtracted
+  // We set the reverse limit switch to zero and add 90 from there
+  private double offset = Constants.angularOffset;
 
-  private double maxHorizontalPower = -0.2; // Percent of volts
+  private double maxHorizontalPower = -0.2; // Percent of volts, negative!?
+
+  private Timer angleTimer = new Timer();
 
   // Change ports later...
   private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.leftFlywheelPort);
@@ -319,13 +324,18 @@ public class BallHandler extends SubsystemBase {
       SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
       pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
     }
-  
-    if (RobotContainer.getBallHandlerJoystick().getRawButton(11)) {
-      angle -= 3.0;
-      setPivotAngle(angle);
-    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(12)) {
-      angle += 3.0;
-      setPivotAngle(angle);
+    
+    angleTimer.reset();
+    if (angleTimer.get() >= 1) {
+      if (RobotContainer.getBallHandlerJoystick().getRawButton(11)) {
+        angle -= 5.0;
+        setPivotAngle(angle);
+        angleTimer.reset();
+      } else if (RobotContainer.getBallHandlerJoystick().getRawButton(12)) {
+        angle += 5.0;
+        setPivotAngle(angle);
+        angleTimer.reset();
+      }
     }
     // setRollerPower(RobotContainer.getBallHandlerJoystick().getY());
     // setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
@@ -342,8 +352,8 @@ public class BallHandler extends SubsystemBase {
     // pivot.set(ControlMode.MotionMagic, (angle/360.0)*4096.0, DemandType.ArbitraryFeedForward, ffCos*maxHorizontalPower);
 
     // New pivot code:
-    double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
-    SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
+    // double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
+    // SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
     // pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
   }
 

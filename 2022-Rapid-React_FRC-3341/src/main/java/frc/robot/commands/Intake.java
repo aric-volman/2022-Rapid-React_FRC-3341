@@ -32,7 +32,7 @@ public class Intake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ballHandler.setFlywheelPower(-1.0); // Negative should mean "suck", this might be too strong
+    ballHandler.setFlywheelPower(-0.2); // Negative should mean "suck", this might be too strong
     ballHandler.setRollerPower(-1.0); // Negative should mean "suck"
   }
 
