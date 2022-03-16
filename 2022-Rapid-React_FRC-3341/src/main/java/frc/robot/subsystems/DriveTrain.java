@@ -28,7 +28,7 @@ public class DriveTrain extends SubsystemBase
   private final VictorSPX _rightDriveVictor;
 
   private AHRS navx = new AHRS(SPI.Port.kMXP);
-  private double ticksToCm  = 127.0/10581.0; //will test constant later
+  private double ticksToMeters  = (127.0/10581.0)/100.0; // will test constant later, found from ticksToCm
  
   public DriveTrain() 
   {
@@ -74,8 +74,8 @@ public class DriveTrain extends SubsystemBase
   }
 
   public double getPosition() {
-    return (getTicks() * (ticksToCm));
-    //average distance of both left and right
+    return (getTicks() * (ticksToMeters));
+    // average distance of both left and right
   }
 
   public double getTicks() {

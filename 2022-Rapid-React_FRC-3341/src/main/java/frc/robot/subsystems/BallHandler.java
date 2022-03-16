@@ -52,7 +52,7 @@ public class BallHandler extends SubsystemBase {
 
   private double angleTime = 0.2;
 
-  private boolean override = true;
+  private boolean override = false;
 
   // Change ports later...
   private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.leftFlywheelPort);
@@ -321,11 +321,11 @@ public class BallHandler extends SubsystemBase {
     if (!override) {
       angleTimer.reset();
       if (angleTimer.get() >= angleTime) {
-        if (RobotContainer.getJoy4().getRawButton(11)) {
+        if (RobotContainer.getJoy4().getRawButton(1)) {
           angle -= 5.0;
           setPivotAngle(angle);
           angleTimer.reset();
-        } else if (RobotContainer.getJoy4().getRawButton(12)) {
+        } else if (RobotContainer.getJoy4().getRawButton(6)) {
           angle += 5.0;
           setPivotAngle(angle);
           angleTimer.reset();
@@ -334,9 +334,9 @@ public class BallHandler extends SubsystemBase {
       double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
       SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
       pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
-      if (RobotContainer.getJoy4().getRawButton(7)) {
-        setRollerPower(1.0); //Intake
-      } else if (RobotContainer.getJoy4().getRawButton(8)) {
+      if (RobotContainer.getJoy4().getRawButton(4)) {
+        setRollerPower(1.0); // Intake
+      } else if (RobotContainer.getJoy4().getRawButton(3)) {
         setRollerPower(-1.0);
       } else {
         setRollerPower(0.0);

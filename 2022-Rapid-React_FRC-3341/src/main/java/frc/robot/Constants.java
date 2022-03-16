@@ -92,5 +92,6 @@ public final class Constants
     }
 
     public static final double angularOffset = 90.0;
+    public static final double shootingAngle = 70;
 }
 

@@ -28,7 +28,7 @@ public class Arm extends SubsystemBase {
   //private final WPI_TalonSRX extend;
   //private final WPI_TalonSRX rotate;
 
-  private final WPI_TalonSRX frontLeftRot, frontRightRot, backLeftRot, backRightRot, pivot;
+  private final WPI_TalonSRX frontLeftRot, frontRightRot, backLeftRot, backRightRot;
   private final WPI_TalonSRX frontLeftExt, frontRightExt, backLeftExt, backRightExt;
   private final DigitalInput input1, input2, input3, input4;
 
@@ -66,7 +66,6 @@ public class Arm extends SubsystemBase {
 
 
     //talon configurations
-    pivot = new WPI_TalonSRX(Constants.BallPorts.BallPivot);
     frontLeftRot = new WPI_TalonSRX(Constants.ArmPorts.FrontLeftArmRot);
     frontRightRot = new WPI_TalonSRX(Constants.ArmPorts.FrontRightArmRot);
     backLeftRot = new WPI_TalonSRX(Constants.ArmPorts.BackLeftArmRot);
@@ -86,8 +85,6 @@ public class Arm extends SubsystemBase {
     backLeftExt.configFactoryDefault();
     backRightExt.configFactoryDefault();
     
-    pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     frontLeftRot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     frontLeftRot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     frontRightRot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);

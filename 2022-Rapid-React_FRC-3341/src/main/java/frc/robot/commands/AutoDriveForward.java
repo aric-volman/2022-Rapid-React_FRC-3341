@@ -19,6 +19,10 @@ public class AutoDriveForward extends CommandBase
   private double kP = 0.7; //test constant later
   private int direction; //0 for forward, 1 for backward
 
+  /**
+  @param dist - Distance in meters
+  */
+
   public AutoDriveForward(DriveTrain dt, double dist) 
   {
     distance = Math.abs(dist);

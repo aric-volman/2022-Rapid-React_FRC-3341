@@ -12,20 +12,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm1;
-import frc.robot.subsystems.Limelight;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.Ultrasonic;
-import frc.robot.subsystems.DriveTrain;
-
-import frc.robot.commands.ArmExtend;
-import frc.robot.commands.TankDrive;
-import frc.robot.commands.setDefaultCommand;
-import frc.robot.commands.RotatePID;
-import frc.robot.commands.ArmExtendSeq;
-import frc.robot.commands.ArmMoveTeleop;
-import frc.robot.commands.FourArmMoveTeleop;
-import frc.robot.commands.DefaultExtend;
 
 
 /**
@@ -36,7 +25,9 @@ import frc.robot.commands.DefaultExtend;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private static BallHandler ballHandler;
   private static Ultrasonic ultrasonicSensor;
+  private static InfraredSensor infrared;
   private static Limelight limelight;
   private static RotatePID rotatePID;
   private static DriveTrain _DriveTrain;
@@ -55,6 +46,7 @@ public class RobotContainer {
   private static ArmExtend extend;
   private static ArmExtendSeq extendSeq;
   private static setDefaultCommand armDefault;
+  private static AutoPath autoPath;
 
   public static Joystick joy1;
   public static Joystick joy2;
@@ -89,12 +81,14 @@ public class RobotContainer {
     isDriving = true;
 
     //ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
+    infrared = new InfraredSensor();
     limelight = new Limelight();
+    ballHandler = new BallHandler();
     //ultrasonicSensor = new Ultrasonic();
     _DriveTrain = new DriveTrain();
     _tankDrive = new TankDrive(_DriveTrain, joy1, joy2);
     _DriveTrain.setDefaultCommand(_tankDrive);
-    
+    autoPath = new AutoPath();
 
     //arm = new Arm();
     frontLeftSub = new Arm1(Constants.ArmPorts.FrontLeftArmExt, Constants.ArmPorts.FrontLeftArmRot, 0, "FrontLeft");
@@ -173,12 +167,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return extendSeq;
+    // return extendSeq;
+    return autoPath;
   }
 
-  /*public static DriveTrain getDriveTrain(){
+  public static DriveTrain getDriveTrain() {
     return _DriveTrain;
-  }*/
+  }
 
   public static Limelight getLimelight(){
     return limelight;
@@ -206,6 +201,10 @@ public class RobotContainer {
 
   public static Ultrasonic getUltrasonic() {
     return ultrasonicSensor;
+  }
+
+  public static BallHandler getBallHandler() {
+    return ballHandler;
   }
 
   public static Boolean getIsDriving() {
