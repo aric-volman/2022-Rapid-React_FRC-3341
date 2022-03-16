@@ -26,7 +26,7 @@ import frc.robot.Ultrasonic;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static BallHandler ballHandler;
-  private static Ultrasonic ultrasonicSensor;
+  private static MaxbotixUltrasonicSensor ultrasonicSensor;
   private static InfraredSensor infrared;
   private static Limelight limelight;
   private static RotatePID rotatePID;
@@ -80,7 +80,7 @@ public class RobotContainer {
     
     isDriving = true;
 
-    //ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
+    ultrasonicSensor = new MaxbotixUltrasonicSensor(Constants.I2CAddresses.MaxbotixUltrasonicSensor);
     infrared = new InfraredSensor();
     limelight = new Limelight();
     ballHandler = new BallHandler();
@@ -199,7 +199,7 @@ public class RobotContainer {
     return joy4;
   }
 
-  public static Ultrasonic getUltrasonic() {
+  public static MaxbotixUltrasonicSensor getUltrasonic() {
     return ultrasonicSensor;
   }
 

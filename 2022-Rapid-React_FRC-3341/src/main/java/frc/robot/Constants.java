@@ -14,6 +14,10 @@ package frc.robot;
  */
 public final class Constants 
 {
+    public static class I2CAddresses {
+        public static final int MaxbotixUltrasonicSensor = 112;
+    }
+    
     public static final class DriveTrainPorts
     {
         public static final int LeftDriveTalonPort = 2; 
