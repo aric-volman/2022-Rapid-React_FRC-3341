@@ -5,37 +5,35 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BallHandler;
+import frc.robot.subsystems.Arm1;
 
-public class ManualRoller extends CommandBase {
+public class DefaultExtend extends CommandBase {
+  /** Creates a new DefaultExtend. */
+  private Arm1 armSub;
+  double power;
 
-  
-  private BallHandler ballHandler;
-  private double power;
-  
-  /** Creates a new ManualRoller. */
-  public ManualRoller(double power, BallHandler bh) {
-    this.ballHandler = bh;
-    this.power = power;
+  public DefaultExtend(Arm1 armSub, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballHandler);
+    this.armSub = armSub;
+    this.power = power;
+    addRequirements(armSub);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    armSub.setExtBrake(false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ballHandler.setRollerPower(power);
+    armSub.extend(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    ballHandler.setRollerPower(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

@@ -50,6 +50,10 @@ public class BallHandler extends SubsystemBase {
 
   private Timer angleTimer = new Timer();
 
+  private double angleTime = 0.2;
+
+  private boolean override = true;
+
   // Change ports later...
   private final WPI_TalonSRX leftFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.leftFlywheelPort);
   private final WPI_TalonSRX rightFlywheel = new WPI_TalonSRX(Constants.BallHandlerPorts.rightFlywheelPort);
@@ -122,6 +126,10 @@ public class BallHandler extends SubsystemBase {
 
   public double getTicks(WPI_TalonSRX motor) {
     return motor.getSelectedSensorPosition();
+  }
+
+  public void controlOverride(boolean controlState) {
+    override = controlState;
   }
 
   // FLYWHEEL METHODS --------------------------------------------------------------------
@@ -297,64 +305,52 @@ public class BallHandler extends SubsystemBase {
     if (pivot.isRevLimitSwitchClosed() == 0) {
       pivot.setSelectedSensorPosition(0, 0, 10);
     }
-
-    // Remove the button logic if we need to map these buttons eventually
-    // Bottom buttons on the top of the controller
-    if (RobotContainer.getBallHandlerJoystick().getRawButton(7)) {
-      setRollerPower(1.0); //Intake
-    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(8)) {
-      setRollerPower(-1.0);
-    } else {
-      setRollerPower(0.0);
-    }
-
-    if (RobotContainer.getBallHandlerJoystick().getRawButton(9)) {
+    /*
+    if (RobotContainer.getJoy4().getRawButton(9)) {
       setFlywheelPower(1.0);
-    } else if (RobotContainer.getBallHandlerJoystick().getRawButton(10)) {
+    } else if (RobotContainer.getJoy4().getRawButton(10)) {
       setFlywheelPower(-0.2); // Intake
     } else {
       setFlywheelPower(0.0);
     }
-
-    if (Math.abs(RobotContainer.getBallHandlerJoystick().getY()) >= 0.1) {
-      setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
-    } 
-    else {
+    */
+    /*if (Math.abs(RobotContainer.getJoy4().getY()) >= 0.1) {
+      setPivotPower(RobotContainer.getJoy4().getY());
+    }
+    else { */
+    if (!override) {
+      angleTimer.reset();
+      if (angleTimer.get() >= angleTime) {
+        if (RobotContainer.getJoy4().getRawButton(11)) {
+          angle -= 5.0;
+          setPivotAngle(angle);
+          angleTimer.reset();
+        } else if (RobotContainer.getJoy4().getRawButton(12)) {
+          angle += 5.0;
+          setPivotAngle(angle);
+          angleTimer.reset();
+        }
+      }
       double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
       SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
       pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
-    }
-    
-    angleTimer.reset();
-    if (angleTimer.get() >= 1) {
-      if (RobotContainer.getBallHandlerJoystick().getRawButton(11)) {
-        angle -= 5.0;
-        setPivotAngle(angle);
-        angleTimer.reset();
-      } else if (RobotContainer.getBallHandlerJoystick().getRawButton(12)) {
-        angle += 5.0;
-        setPivotAngle(angle);
-        angleTimer.reset();
+      if (RobotContainer.getJoy4().getRawButton(7)) {
+        setRollerPower(1.0); //Intake
+      } else if (RobotContainer.getJoy4().getRawButton(8)) {
+        setRollerPower(-1.0);
+      } else {
+        setRollerPower(0.0);
       }
+      // setRollerPower(RobotContainer.getJoy4().getY());
+      // setPivotPower(RobotContainer.getJoy4().getY());
+      setFlywheelPower(RobotContainer.getJoy4().getY());
     }
-    // setRollerPower(RobotContainer.getBallHandlerJoystick().getY());
-    // setPivotPower(RobotContainer.getBallHandlerJoystick().getY());
-    // setFlywheelPower(RobotContainer.getBallHandlerJoystick().getY());
 
     // These methods just set the PID controller's constants so that we can tune them if needed
     leftFlywheelPID.setPID(leftFlywheelTestInputPIDP.getDouble(Constants.leftFlywheelPIDConsts.pidP), leftFlywheelTestInputPIDI.getDouble(Constants.leftFlywheelPIDConsts.pidI), leftFlywheelTestInputPIDD.getDouble(Constants.leftFlywheelPIDConsts.pidD));
     rightFlywheelPID.setPID(rightFlywheelTestInputPIDP.getDouble(Constants.rightFlywheelPIDConsts.pidP), rightFlywheelTestInputPIDI.getDouble(Constants.rightFlywheelPIDConsts.pidI), rightFlywheelTestInputPIDD.getDouble(Constants.rightFlywheelPIDConsts.pidD));
     pivotPID.setPID(pivotTestInputPIDP.getDouble(Constants.pivotPIDConsts.pidP), pivotTestInputPIDI.getDouble(Constants.pivotPIDConsts.pidI), pivotTestInputPIDD.getDouble(Constants.pivotPIDConsts.pidD));
 
-    // Uncomment this for Feedforward and Motion Magic.
-    // We assume that the "angle" for Motion Magic is measured in native units, ticks
-    // double ffCos = Math.cos(Math.toRadians(getRawPivotPosition()));
-    // pivot.set(ControlMode.MotionMagic, (angle/360.0)*4096.0, DemandType.ArbitraryFeedForward, ffCos*maxHorizontalPower);
-
-    // New pivot code:
-    // double ffCos = Math.cos(Math.toRadians(getPivotPosition()));
-    // SmartDashboard.putNumber("Pivot FF", ffCos*maxHorizontalPower);
-    // pivot.set(pivotPID.calculate(getPivotPosition()) + ffCos*maxHorizontalPower);
   }
 
 }
