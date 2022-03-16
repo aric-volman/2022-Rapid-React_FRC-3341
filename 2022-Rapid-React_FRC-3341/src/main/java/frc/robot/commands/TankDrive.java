@@ -45,11 +45,9 @@ public class TankDrive extends CommandBase {
 
     if (RobotContainer.getIsDriving()) {
       _driveTrain.tankDrive(-0.8 * _leftJoystick.getRawAxis(Constants.JoystickAxis.YAxis), -0.8 * _rightJoystick.getRawAxis(Constants.JoystickAxis.YAxis));
-      RobotContainer.getBallHandler().controlOverride(false);
     } else {
        if (RobotContainer.getBallHandler().isReverseLimitClosed()){
          RobotContainer.getBallHandler().setPivotAngle(90.0); // For safety when climbing
-         RobotContainer.getBallHandler().controlOverride(true);
        }
     }
   }
